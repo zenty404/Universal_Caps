@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Universal Caps</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header class="terminal">
+        <div class="terminal-title">Welcome to Universal Caps !</div>
+        <div class="terminal-message" id="terminalMessage" aria-live="polite" aria-atomic="true"></div>
+    </header>
+
+    <h1>
+        Caps : <span id="caps">0</span>
+       
+    </h1>
+
+    <button  id="MakeCaps" onclick="capsClic(1)">Make Cap</button>
+
+    <div id="businessDiv">
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <b>Business</b>
+            <hr>
+        </div>
+        
+        Available Funds: $ <span id="funds">0.00</span><br>
+        <div id="revPerSecDiv" style="display: none;">  
+            Avg. Rev. per sec: $ <span id="avgRev">0.00</span><br>
+            Avg. Caps Sold per sec: <span id="avgSales">0</span><br>    
+        </div>  
+        Unsold Inventory: <span id="unsoldClips">0</span><br> 
+        <button class="button2" id="btnLowerPrice" onclick="lowerPrice()">lower</button>
+        <button class="button2" id="btnRaisePrice" onclick="raisePrice()">raise</button>
+        Price per Caps: $ <span id="margin">0.25</span><br>
+        Public Demand: <span id="demand">32</span>%<br>
+        <br>    
+        <button class="button2" id="btnExpandMarketing" onclick="buyAds()" disabled="">Marketing</button> <span class="engineText6"> Level: </span><span class="engineText6" id="marketingLvl">1</span><br>
+        Cost: $ <span id="adCost">100.00</span><br>
+        <br>    
+    </div>
+
+    <script>
+        // compteur de caps simple
+        let caps = parseInt(document.getElementById('caps').textContent, 10) || 0;
+
+        // Début de la session (temps de jeu)
+        const sessionStart = Date.now();
+
+        // jalons : 1e3, 1e4, 1e5, 1e6, 1e7, 1e8, 1e9
+        const milestones = [1e2, 1e3, 1e4, 1e5, 1e6, 1e7, 1e8, 1e9];
+        const reached = new Set();
+
+        function formatElapsed(ms){
+            const totalSec = Math.floor(ms / 1000);
+            const hrs = Math.floor(totalSec / 3600);
+            const mins = Math.floor((totalSec % 3600) / 60);
+            const secs = totalSec % 60;
+            const pad = n => String(n).padStart(2,'0');
+            return hrs > 0 ? `${pad(hrs)}:${pad(mins)}:${pad(secs)}` : `${pad(mins)}:${pad(secs)}`;
+        }
+
+        function showTerminalMessage(text, duration = 5000){
+            const el = document.getElementById('terminalMessage');
+            if(!el) return;
+            el.textContent = text;
+            el.classList.add('visible');
+            // retirer après duration
+            clearTimeout(el._hideTimeout);
+            el._hideTimeout = setTimeout(()=>{
+                el.classList.remove('visible');
+            }, duration);
+        }
+
+        function checkMilestones(){
+            for(const m of milestones){
+                if(caps >= m && !reached.has(m)){
+                    reached.add(m);
+                    const elapsed = Date.now() - sessionStart;
+                    const timeStr = formatElapsed(elapsed);
+                    showTerminalMessage(`Congrats ! ${m.toLocaleString()} caps in ${timeStr}`);
+                }
+            }
+        }
+
+        function capsClic(n){
+            caps += n;
+            document.getElementById('caps').textContent = caps;
+            checkMilestones();
+        }
+
+        
+
+        function lowerPrice() {
+            const marginSpan = document.getElementById('margin');
+            let price = parseFloat(marginSpan.textContent.replace(',', '.'));
+            price = Math.max(0.01, price - 0.01);
+            marginSpan.textContent = price.toFixed(2);
+        }
+
+        function raisePrice() {
+            const marginSpan = document.getElementById('margin');
+            let price = parseFloat(marginSpan.textContent.replace(',', '.'));
+            price = Math.max(0.01, price + 0.01);
+            marginSpan.textContent = price.toFixed(2);
+        }
+
+    </script>
+
+</body>
+</html>
