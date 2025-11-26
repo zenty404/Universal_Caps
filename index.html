@@ -27,10 +27,6 @@
         </div>
         
         Available Funds: $ <span id="funds">0.00</span><br>
-        <div id="revPerSecDiv" style="display: none;">  
-            Avg. Rev. per sec: $ <span id="avgRev">0.00</span><br>
-            Avg. Caps Sold per sec: <span id="avgSales">0</span><br>    
-        </div>  
         Unsold Inventory: <span id="unsoldClips">0</span><br> 
         <button class="button2" id="btnLowerPrice" onclick="lowerPrice()">lower</button>
         <button class="button2" id="btnRaisePrice" onclick="raisePrice()">raise</button>
@@ -40,6 +36,17 @@
         <button class="button2" id="btnExpandMarketing" onclick="buyAds()" disabled="">Marketing</button> <span class="engineText6"> Level: </span><span class="engineText6" id="marketingLvl">1</span><br>
         Cost: $ <span id="adCost">100.00</span><br>
         <br>    
+
+        <div id="automatisationDiv">
+            <div style="display: flex; align-items: center; gap: 10px,">
+                <b>Automatisation Section</b>
+                <hr>
+            </div>
+            <button class="button2" id="BuyAutoCapser" disabled="">Buy AutoCapser</button> 
+            Price : $ <span id="priceAutoCapser">15</span>
+
+        </div>
+        
     </div>
 
     <script>
@@ -49,6 +56,10 @@
         let unsold = parseInt(document.getElementById('unsoldClips').textContent) || 0;
         
         let funds = parseFloat(document.getElementById('funds').textContent) || 0;
+
+        // Variables AutoCapser
+        let autoCapsers = 0;
+        let priceAutoCapser = parseFloat(document.getElementById('priceAutoCapser').textContent);
 
         // Début de la session (temps de jeu)
         const sessionStart = Date.now();
@@ -152,6 +163,53 @@
         }
 
         setInterval(autoSell, 1000);
+
+        // Mettre à jour le bouton AutoCapser selon les fonds et augmenter le prix de façon agressive
+        function updateAutoCapserButton() {
+            const btn = document.getElementById('BuyAutoCapser');
+            btn.disabled = funds < priceAutoCapser;
+            
+            // Affichage du prix arrondi
+            btn.textContent = `Buy AutoCapser ($${priceAutoCapser.toFixed(2)})`;
+        }
+
+        // Acheter un AutoCapser avec augmentation agressive du prix
+        function buyAutoCapser() {
+            if(funds >= priceAutoCapser){
+                funds -= priceAutoCapser;
+                autoCapsers += 1;
+
+                // Augmentation exponentielle du prix à chaque achat (comme Universal Paperclips)
+                priceAutoCapser *= 1.25; // augmente de 25% à chaque achat
+                // Optionnel : tu peux utiliser un facteur plus élevé pour rendre ça encore plus agressif
+                // priceAutoCapser *= 1.3;
+
+                document.getElementById('funds').textContent = funds.toFixed(2);
+                document.getElementById('priceAutoCapser').textContent = priceAutoCapser.toFixed(2);
+
+                updateAutoCapserButton();
+            }
+        }
+
+        // Ajouter les caps automatiquement chaque seconde
+        function autoGenerateCaps() {
+            if(autoCapsers > 0){
+                const generated = autoCapsers; // 1 caps par AutoCapser par seconde
+                caps += generated;
+                unsold += generated;
+
+                document.getElementById('caps').textContent = caps;
+                document.getElementById('unsoldClips').textContent = unsold;
+                checkMilestones();
+            }
+        }
+
+        // Lancer l’automatisation toutes les secondes
+        setInterval(autoGenerateCaps, 1000);
+        setInterval(updateAutoCapserButton, 500); // Met à jour le bouton régulièrement
+
+        // Associer le bouton à la fonction
+        document.getElementById('BuyAutoCapser').onclick = buyAutoCapser;
 
     </script>
 
