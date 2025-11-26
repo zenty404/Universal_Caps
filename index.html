@@ -11,6 +11,7 @@
     <header class="terminal">
         <div class="terminal-title">Welcome to Universal Caps !</div>
         <div class="terminal-message" id="terminalMessage" aria-live="polite" aria-atomic="true"></div>
+        <button id="resetBtn" style="position:absolute; top:10px; right:10px;">Reset Game</button>
     </header>
 
     <h1>
@@ -143,6 +144,39 @@
             }
         }
 
+        function resetGame() {
+            // Réinitialiser les variables
+            caps = 0;
+            unsold = 0;
+            funds = 0;
+            autoCapsers = 0;
+            priceAutoCapser = 15;
+            marketingLvl = 1;
+            adCost = 100;
+            
+            reached.clear();
+            localStorage.clear(); // supprime toutes les sauvegardes
+
+            // Mettre à jour l'affichage
+            document.getElementById('caps').textContent = caps;
+            document.getElementById('unsoldClips').textContent = unsold;
+            document.getElementById('funds').textContent = funds.toFixed(2);
+            document.getElementById('priceAutoCapser').textContent = priceAutoCapser.toFixed(2);
+            document.getElementById('marketingLvl').textContent = marketingLvl;
+            document.getElementById('adCost').textContent = adCost.toFixed(2);
+            document.getElementById('demand').textContent = "0";
+
+            showTerminalMessage("Game reset ! All values set to 0", 5000);
+
+            // Redémarrer la session
+            sessionStart = Date.now();
+        }
+
+        // lier le bouton à la fonction
+        document.getElementById('resetBtn').onclick = resetGame; 
+
+
+
         // Appelle la fonction au chargement
         showLastSaveMessage();
 
@@ -172,12 +206,15 @@
             }, duration);
         }
 
-        function checkMilestones(){
-            for(const m of milestones){
-                if(caps >= m && !reached.has(m)){
+        function checkMilestones() {
+            const prevElapsed = parseInt(localStorage.getItem('elapsed')) || 0;
+            const sessionElapsed = Date.now() - sessionStart;
+            const totalElapsed = prevElapsed + sessionElapsed;
+
+            for (const m of milestones) {
+                if (caps >= m && !reached.has(m)) {
                     reached.add(m);
-                    const elapsed = Date.now() - sessionStart;
-                    const timeStr = formatElapsed(elapsed);
+                    const timeStr = formatElapsed(totalElapsed);
                     showTerminalMessage(`Congrats ! ${m.toLocaleString()} caps in ${timeStr}`);
                 }
             }
