@@ -61,6 +61,10 @@
         let autoCapsers = 0;
         let priceAutoCapser = parseFloat(document.getElementById('priceAutoCapser').textContent);
 
+        let marketingLvl = parseInt(document.getElementById('marketingLvl').textContent) || 1;
+        let adCost = parseFloat(document.getElementById('adCost').textContent) || 100;
+
+
         // Début de la session (temps de jeu)
         const sessionStart = Date.now();
 
@@ -132,14 +136,18 @@
         function PublicDemand() {
             const price = parseFloat(document.getElementById('margin').textContent.replace(',', '.'));
 
-            // Fonction agressive
+            // Fonction agressive de base
             let demand = 200 * Math.exp(-10 * price);
 
-            // Clamp entre 0 et 200%
-            demand = Math.max(0, Math.min(200, demand));
+            // Bonus marketing : chaque niveau augmente la demande de 5% (ou plus si tu veux)
+            demand *= 1 + 0.05 * marketingLvl;
+
+            // Clamp entre 0 et 200% (ou 200% + marketing si tu veux dépasser)
+            demand = Math.max(0, Math.min(500, demand)); // j'ai mis 500 max pour le bonus marketing
 
             document.getElementById('demand').textContent = demand.toFixed(0);
         }
+
 
         function autoSell() {
 
@@ -162,7 +170,7 @@
             document.getElementById('funds').textContent = funds.toFixed(2);
         }
 
-        setInterval(autoSell, 1000);
+        
 
         // Mettre à jour le bouton AutoCapser selon les fonds et augmenter le prix de façon agressive
         function updateAutoCapserButton() {
@@ -204,12 +212,41 @@
             }
         }
 
+        function buyAds() {
+            if(funds >= adCost) {
+                funds -= adCost;
+                marketingLvl += 1;
+
+                // Augmentation agressive du coût pour le niveau suivant (par exemple x3)
+                adCost *= 3;
+
+                // Mettre à jour affichage
+                document.getElementById('funds').textContent = funds.toFixed(2);
+                document.getElementById('marketingLvl').textContent = marketingLvl;
+                document.getElementById('adCost').textContent = adCost.toFixed(2);
+
+                // Mettre à jour la demande publique
+                PublicDemand();
+            }
+        }
+
+        function updateMarketingButton() {
+            const btn = document.getElementById('btnExpandMarketing');
+            btn.disabled = funds < adCost;
+        }
+
+
         // Lancer l’automatisation toutes les secondes
         setInterval(autoGenerateCaps, 1000);
         setInterval(updateAutoCapserButton, 500); // Met à jour le bouton régulièrement
+        setInterval(autoSell, 1000);
+        setInterval(updateMarketingButton, 500);
 
-        // Associer le bouton à la fonction
+        // Associer les boutons au fonction
         document.getElementById('BuyAutoCapser').onclick = buyAutoCapser;
+
+        document.getElementById('btnExpandMarketing').onclick = buyAds;
+
 
     </script>
 
