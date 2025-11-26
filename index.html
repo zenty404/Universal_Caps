@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -98,6 +98,8 @@
             let price = parseFloat(marginSpan.textContent.replace(',', '.'));
             price = Math.max(0.01, price - 0.01);
             marginSpan.textContent = price.toFixed(2);
+            PublicDemand();
+
         }
 
         function raisePrice() {
@@ -105,7 +107,22 @@
             let price = parseFloat(marginSpan.textContent.replace(',', '.'));
             price = Math.max(0.01, price + 0.01);
             marginSpan.textContent = price.toFixed(2);
+            PublicDemand();
+
         }
+
+        function PublicDemand() {
+            const price = parseFloat(document.getElementById('margin').textContent.replace(',', '.'));
+
+            // Fonction agressive
+            let demand = 200 * Math.exp(-10 * price);
+
+            // Clamp entre 0 et 200%
+            demand = Math.max(0, Math.min(200, demand));
+
+            document.getElementById('demand').textContent = demand.toFixed(0);
+        }
+
 
     </script>
 
