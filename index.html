@@ -33,7 +33,7 @@
         Price per Caps: $ <span id="margin">0.25</span><br>
         Public Demand: <span id="demand">32</span>%<br>
         <br>    
-        <button class="button2" id="btnExpandMarketing" onclick="buyAds()" disabled="">Marketing</button> <span class="engineText6"> Level: </span><span class="engineText6" id="marketingLvl">1</span><br>
+        <button class="button2" id="btnExpandMarketing" onclick="buyAds()" disabled="">Marketing</button> <span> Level: </span><span id="marketingLvl">1</span><br>
         Cost: $ <span id="adCost">100.00</span><br>
         <br>    
 
@@ -71,6 +71,46 @@
         // jalons : 1e3, 1e4, 1e5, 1e6, 1e7, 1e8, 1e9
         const milestones = [1e2, 1e3, 1e4, 1e5, 1e6, 1e7, 1e8, 1e9];
         const reached = new Set();
+
+        function saveGame() {
+            localStorage.setItem('caps', caps);
+            localStorage.setItem('unsold', unsold);
+            localStorage.setItem('funds', funds);
+            localStorage.setItem('autoCapsers', autoCapsers);
+            localStorage.setItem('priceAutoCapser', priceAutoCapser);
+            localStorage.setItem('marketingLvl', marketingLvl);
+            localStorage.setItem('adCost', adCost);
+            localStorage.setItem('reached', JSON.stringify([...reached])); // <-- sauvegarde
+        }
+
+        function loadGame() {
+            caps = parseInt(localStorage.getItem('caps')) || 0;
+            unsold = parseInt(localStorage.getItem('unsold')) || 0;
+            funds = parseFloat(localStorage.getItem('funds')) || 0;
+            autoCapsers = parseInt(localStorage.getItem('autoCapsers')) || 0;
+            priceAutoCapser = parseFloat(localStorage.getItem('priceAutoCapser')) || 15;
+            marketingLvl = parseInt(localStorage.getItem('marketingLvl')) || 1;
+            adCost = parseFloat(localStorage.getItem('adCost')) || 100;
+            
+            const reachedArray = JSON.parse(localStorage.getItem('reached'));
+            reached.clear();
+            if (reachedArray) {
+                for (const m of reachedArray) reached.add(m);
+            }
+
+            // **Marquer les milestones déjà dépassées**
+            for (const m of milestones) {
+                if (caps >= m) reached.add(m);
+            }
+
+            // Mettre à jour l’affichage
+            document.getElementById('caps').textContent = caps;
+            document.getElementById('unsoldClips').textContent = unsold;
+            document.getElementById('funds').textContent = funds.toFixed(2);
+            document.getElementById('priceAutoCapser').textContent = priceAutoCapser.toFixed(2);
+            document.getElementById('marketingLvl').textContent = marketingLvl;
+            document.getElementById('adCost').textContent = adCost.toFixed(2);
+        }
 
         function formatElapsed(ms){
             const totalSec = Math.floor(ms / 1000);
@@ -237,16 +277,19 @@
 
 
         // Lancer l’automatisation toutes les secondes
-        setInterval(autoGenerateCaps, 1000);
-        setInterval(updateAutoCapserButton, 500); // Met à jour le bouton régulièrement
-        setInterval(autoSell, 1000);
-        setInterval(updateMarketingButton, 500);
+        setInterval(autoGenerateCaps, 1000); // met à jour les autocapser
+        setInterval(updateAutoCapserButton, 500); // Met à jour le bouton d'achat d'autocapser
+        setInterval(autoSell, 1000); //met à jour l'autosell
+        setInterval(updateMarketingButton, 500); // met à jour le bouton level marketing
+        setInterval(saveGame, 5000); // sauvegarde toutes les 5 secondes
 
         // Associer les boutons au fonction
         document.getElementById('BuyAutoCapser').onclick = buyAutoCapser;
 
         document.getElementById('btnExpandMarketing').onclick = buyAds;
 
+        // Charger la save
+        loadGame();
 
     </script>
 
