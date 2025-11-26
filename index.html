@@ -50,6 +50,28 @@
         
     </div>
 
+    <div id="itResourcesDiv" style="display:none;">
+        <h2>IT Resources</h2>
+
+        <div><b>Trust:</b> <span id="trust">0</span></div>
+        <div><b>Next Trust at:</b> <span id="nextTrust">1 000</span> caps</div>
+
+        <br>
+
+        <div><b>Ops:</b> <span id="ops">0</span> / <span id="opsMax">1000</span></div>
+
+        <br>
+
+        <button id="btnBuyCPU" onclick="buyCPU()" disabled>Buy CPU (1 Trust)</button>
+        <span> CPUs: <span id="cpuCount">1</span></span>
+
+        <br><br>
+
+        <button id="btnBuyRAM" onclick="buyRAM()" disabled>Buy RAM (1 Trust)</button>
+        <span> RAM: <span id="ramCount">1</span></span>
+
+    </div>
+
     <script>
 
         // ---Variable---
@@ -68,6 +90,15 @@
         let marketingLvl = parseInt(document.getElementById('marketingLvl').textContent) || 1;
         let adCost = parseFloat(document.getElementById('adCost').textContent) || 100;
 
+        // IT Resources
+        let trust = 2;
+        let nextTrustAt = 1000;
+
+        let ops = 0;
+        let opsMax = 1000;
+
+        let cpuCount = 1;
+        let ramCount = 1;  // RAM 1 = 1000 ops max
 
         // --- Fonction relative aux Sauvergardes ---
 
@@ -226,6 +257,7 @@
             document.getElementById('caps').textContent = caps;
             document.getElementById('unsoldClips').textContent = unsold;
             checkMilestones();
+            checkTrustGain();
         }
 
 
@@ -325,6 +357,7 @@
                 document.getElementById('caps').textContent = caps;
                 document.getElementById('unsoldClips').textContent = unsold;
                 checkMilestones();
+                checkTrustGain();
             }
         }
 
@@ -351,6 +384,55 @@
             btn.disabled = funds < adCost;
         }
 
+        function checkTrustGain() {
+            if (caps >= nextTrustAt) {
+                trust++;
+                document.getElementById('trust').textContent = trust;
+
+                // Nouveau palier ×10
+                nextTrustAt *= 10;
+                document.getElementById('nextTrust').textContent = nextTrustAt.toLocaleString();
+
+                showTerminalMessage(`New Trust acquired! (${trust} total)`);
+                
+                // Afficher la section IT Resources une fois le premier Trust acquis
+                if (trust > 0) {
+                    unlockITResources();
+                }
+            }
+        }
+
+        function buyCPU() {
+            if (trust <= 0) return;
+            trust--;
+            cpuCount++;
+
+            document.getElementById("trust").textContent = trust;
+            document.getElementById("cpuCount").textContent = cpuCount;
+
+            updateCPUButton();
+        }
+
+        function buyRAM() {
+            if (trust <= 0) return;
+            trust--;
+            ramCount++;
+            opsMax = ramCount * 1000;
+
+            document.getElementById("trust").textContent = trust;
+            document.getElementById("ramCount").textContent = ramCount;
+            document.getElementById("opsMax").textContent = opsMax;
+
+            updateRAMButton();
+        }
+
+        function updateCPUButton() {
+            document.getElementById("btnBuyCPU").disabled = (trust <= 0);
+        }
+
+        function updateRAMButton() {
+            document.getElementById("btnBuyRAM").disabled = (trust <= 0);
+        }
 
         // Lancer l’automatisation toutes les secondes
         setInterval(autoGenerateCaps, 1000); // met à jour les autocapser
@@ -358,6 +440,17 @@
         setInterval(autoSell, 1000); //met à jour l'autosell
         setInterval(updateMarketingButton, 500); // met à jour le bouton level marketing
         setInterval(saveGame, 5000); // sauvegarde toutes les 5 secondes
+        setInterval(() => {
+            if (ops < opsMax) {
+                ops += cpuCount;  // 1 CPU = +1 ops/2 sec
+                if (ops > opsMax) ops = opsMax;
+                document.getElementById("ops").textContent = ops;
+            }
+        }, 2000);
+
+        function unlockITResources() {
+            document.getElementById('itResourcesDiv').style.display = 'block';
+        }
 
         // Associer les boutons au fonction
         document.getElementById('BuyAutoCapser').onclick = buyAutoCapser;
