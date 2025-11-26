@@ -46,6 +46,10 @@
         // compteur de caps simple
         let caps = parseInt(document.getElementById('caps').textContent, 10) || 0;
 
+        let unsold = parseInt(document.getElementById('unsoldClips').textContent) || 0;
+        
+        let funds = parseFloat(document.getElementById('funds').textContent) || 0;
+
         // Début de la session (temps de jeu)
         const sessionStart = Date.now();
 
@@ -87,9 +91,12 @@
 
         function capsClic(n){
             caps += n;
+            unsold += n; // On ajoute à l'inventaire
             document.getElementById('caps').textContent = caps;
+            document.getElementById('unsoldClips').textContent = unsold;
             checkMilestones();
         }
+
 
         
 
@@ -123,6 +130,28 @@
             document.getElementById('demand').textContent = demand.toFixed(0);
         }
 
+        function autoSell() {
+
+            const demand = parseFloat(document.getElementById('demand').textContent); // %
+            const price = parseFloat(document.getElementById('margin').textContent);
+
+            if (unsold <= 0 || demand <= 0) return;
+
+            // Calcul des caps vendus (demande agressive)
+            let sold = Math.floor(unsold * (demand / 100));
+
+            // Update inventaire
+            unsold -= sold;
+            document.getElementById('unsoldClips').textContent = unsold;
+
+            // Gains
+            const revenue = sold * price;
+            funds += revenue;
+
+            document.getElementById('funds').textContent = funds.toFixed(2);
+        }
+
+        setInterval(autoSell, 1000);
 
     </script>
 
