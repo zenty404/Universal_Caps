@@ -50,6 +50,9 @@
     </div>
 
     <script>
+
+        // ---Variable---
+
         // compteur de caps simple
         let caps = parseInt(document.getElementById('caps').textContent, 10) || 0;
 
@@ -63,6 +66,9 @@
 
         let marketingLvl = parseInt(document.getElementById('marketingLvl').textContent) || 1;
         let adCost = parseFloat(document.getElementById('adCost').textContent) || 100;
+
+
+        // --- Fonction relative aux Sauvergardes ---
 
 
         // Début de la session (temps de jeu)
@@ -80,7 +86,14 @@
             localStorage.setItem('priceAutoCapser', priceAutoCapser);
             localStorage.setItem('marketingLvl', marketingLvl);
             localStorage.setItem('adCost', adCost);
-            localStorage.setItem('reached', JSON.stringify([...reached])); // <-- sauvegarde
+
+            // Sauvegarde du temps de jeu total
+            const elapsed = Date.now() - sessionStart; // durée depuis le début de la session
+            const prevElapsed = parseInt(localStorage.getItem('elapsed')) || 0;
+            localStorage.setItem('elapsed', prevElapsed + elapsed);
+
+            // On peut aussi réinitialiser sessionStart
+            sessionStart = Date.now();
         }
 
         function loadGame() {
@@ -111,6 +124,32 @@
             document.getElementById('marketingLvl').textContent = marketingLvl;
             document.getElementById('adCost').textContent = adCost.toFixed(2);
         }
+
+        // Afficher le message de dernière sauvegarde chargée
+        function showLastSaveMessage() {
+            const lastCaps = parseInt(localStorage.getItem('caps')) || 0;
+            const totalElapsed = parseInt(localStorage.getItem('elapsed')) || 0;
+            
+            const totalSec = Math.floor(totalElapsed / 1000);
+            const hrs = Math.floor(totalSec / 3600);
+            const mins = Math.floor((totalSec % 3600) / 60);
+            const secs = totalSec % 60;
+            const pad = n => String(n).padStart(2,'0');
+
+            if(lastCaps > 0) {
+                let timeStr = hrs > 0 ? `${hrs}:${pad(mins)}:${pad(secs)}` : `${mins}:${pad(secs)}`;
+                const msg = `Last save loaded: ${lastCaps} caps in ${timeStr} min`;
+                showTerminalMessage(msg, 5000);
+            }
+        }
+
+        // Appelle la fonction au chargement
+        showLastSaveMessage();
+
+        // Charger la save
+        loadGame();
+
+        // --- Fonction de Jeu ---
 
         function formatElapsed(ms){
             const totalSec = Math.floor(ms / 1000);
@@ -287,9 +326,6 @@
         document.getElementById('BuyAutoCapser').onclick = buyAutoCapser;
 
         document.getElementById('btnExpandMarketing').onclick = buyAds;
-
-        // Charger la save
-        loadGame();
 
     </script>
 
