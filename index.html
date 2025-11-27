@@ -161,8 +161,6 @@
             document.getElementById("ramCount").textContent = ramCount;
             document.getElementById("opsMax").textContent = opsMax;
             document.getElementById("nextTrust").textContent = nextTrustAt.toLocaleString();
-
-            if (trust > 0) unlockITResources();
         }
 
         // Afficher le message de dernière sauvegarde chargée
@@ -266,6 +264,11 @@
             document.getElementById('unsoldClips').textContent = unsold;
             checkMilestones();
             checkTrustGain();
+
+            // Afficher IT Resources si caps >= 1000
+            if (caps >= 1000) {
+                unlockITResources();
+            }
         }
 
 
@@ -367,6 +370,10 @@
                 checkMilestones();
                 checkTrustGain();
             }
+            // Afficher IT Resources si caps >= 1000
+            if (caps >= 1000) {
+                unlockITResources();
+            }
         }
 
         function buyAds() {
@@ -402,11 +409,6 @@
                 document.getElementById('nextTrust').textContent = nextTrustAt.toLocaleString();
 
                 showTerminalMessage(`New Trust acquired! (${trust} total)`);
-                
-                // Afficher la section IT Resources une fois le premier Trust acquis
-                if (trust > 0) {
-                    unlockITResources();
-                }
             }
         }
 
@@ -457,9 +459,13 @@
         }, 2000);
 
         function unlockITResources() {
-            document.getElementById('itResourcesDiv').style.display = 'block';
-            updateCPUButton();
-            updateRAMButton();
+            const div = document.getElementById('itResourcesDiv');
+            if(div.style.display !== 'block') {
+                div.style.display = 'block';
+                updateCPUButton();
+                updateRAMButton();
+                showTerminalMessage("IT Resources unlocked!");
+            }
         }
 
         // Associer les boutons au fonction
