@@ -92,7 +92,7 @@
 
         // IT Resources
         let trust = 2;
-        let nextTrustAt = 1000;
+        let nextTrustAt = 10000;
 
         let ops = 0;
         let opsMax = 1000;
@@ -155,6 +155,14 @@
             document.getElementById('priceAutoCapser').textContent = priceAutoCapser.toFixed(2);
             document.getElementById('marketingLvl').textContent = marketingLvl;
             document.getElementById('adCost').textContent = adCost.toFixed(2);
+
+            document.getElementById("trust").textContent = trust;
+            document.getElementById("cpuCount").textContent = cpuCount;
+            document.getElementById("ramCount").textContent = ramCount;
+            document.getElementById("opsMax").textContent = opsMax;
+            document.getElementById("nextTrust").textContent = nextTrustAt.toLocaleString();
+
+            if (trust > 0) unlockITResources();
         }
 
         // Afficher le message de dernière sauvegarde chargée
@@ -390,7 +398,7 @@
                 document.getElementById('trust').textContent = trust;
 
                 // Nouveau palier ×10
-                nextTrustAt *= 10;
+                nextTrustAt += 10000;
                 document.getElementById('nextTrust').textContent = nextTrustAt.toLocaleString();
 
                 showTerminalMessage(`New Trust acquired! (${trust} total)`);
@@ -427,11 +435,11 @@
         }
 
         function updateCPUButton() {
-            document.getElementById("btnBuyCPU").disabled = (trust <= 0);
+            document.getElementById("btnBuyCPU").disabled = (trust < 1);
         }
 
         function updateRAMButton() {
-            document.getElementById("btnBuyRAM").disabled = (trust <= 0);
+            document.getElementById("btnBuyRAM").disabled = (trust < 1);
         }
 
         // Lancer l’automatisation toutes les secondes
@@ -450,6 +458,8 @@
 
         function unlockITResources() {
             document.getElementById('itResourcesDiv').style.display = 'block';
+            updateCPUButton();
+            updateRAMButton();
         }
 
         // Associer les boutons au fonction
