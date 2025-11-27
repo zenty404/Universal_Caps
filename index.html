@@ -90,14 +90,16 @@
         let adCost = parseFloat(document.getElementById('adCost').textContent) || 100;
 
         // IT Resources
-        let trust = 2;
+        let trust = parseInt(document.getElementById("trust").textContent) || 0;
         let nextTrustAt = 10000;
 
         let ops = 0;
         let opsMax = 1000;
 
-        let cpuCount = 1;
-        let ramCount = 1;  // RAM 1 = 1000 ops max
+        let cpuCount = parseInt(document.getElementById("cpuCount").textContent) || 1;
+        let ramCount = parseInt(document.getElementById("ramCount").textContent) || 1;  // RAM 1 = 1000 ops max
+        // Nouvelle variable pour suivre si la section a été débloquée
+        let itResourcesUnlocked = false;
 
         // --- Fonction relative aux Sauvergardes ---
 
@@ -117,18 +119,25 @@
             localStorage.setItem('priceAutoCapser', priceAutoCapser);
             localStorage.setItem('marketingLvl', marketingLvl);
             localStorage.setItem('adCost', adCost);
+            
+            // --- NOUVEAU : Sauvegarde des ressources IT ---
+            localStorage.setItem('trust', trust);
+            localStorage.setItem('nextTrustAt', nextTrustAt);
+            localStorage.setItem('ops', ops);
+            // opsMax, cpuCount, et ramCount sont recalculés par loadGame, mais on peut les sauver
+            localStorage.setItem('cpuCount', cpuCount);
+            localStorage.setItem('ramCount', ramCount);
+            localStorage.setItem('itResourcesUnlocked', itResourcesUnlocked); // Sauvegarder l'état du déblocage
+            // ----------------------------------------------
 
             // Sauvegarde du temps de jeu total
-            const elapsed = Date.now() - sessionStart; // durée depuis le début de la session
+            const elapsed = Date.now() - sessionStart; 
             const prevElapsed = parseInt(localStorage.getItem('elapsed')) || 0;
             localStorage.setItem('elapsed', prevElapsed + elapsed);
-
-            // On peut aussi réinitialiser sessionStart
-            sessionStart = Date.now();
         }
 
         function loadGame() {
-            caps = parseInt(localStorage.getItem('caps')) || 0;
+                    caps = parseInt(localStorage.getItem('caps')) || 0;
             unsold = parseInt(localStorage.getItem('unsold')) || 0;
             funds = parseFloat(localStorage.getItem('funds')) || 0;
             autoCapsers = parseInt(localStorage.getItem('autoCapsers')) || 0;
@@ -136,6 +145,16 @@
             marketingLvl = parseInt(localStorage.getItem('marketingLvl')) || 1;
             adCost = parseFloat(localStorage.getItem('adCost')) || 100;
             
+            // --- NOUVEAU : Chargement des ressources IT ---
+            trust = parseInt(localStorage.getItem('trust')) || 0; // Utiliser 0 si non trouvé
+            nextTrustAt = parseInt(localStorage.getItem('nextTrustAt')) || 10000;
+            ops = parseInt(localStorage.getItem('ops')) || 0; // La valeur ops est sauvegardée pour la continuité
+            cpuCount = parseInt(localStorage.getItem('cpuCount')) || 1;
+            ramCount = parseInt(localStorage.getItem('ramCount')) || 1;
+            opsMax = ramCount * 1000; // Recalculer opsMax à partir de ramCount
+            itResourcesUnlocked = localStorage.getItem('itResourcesUnlocked') === 'true'; // Charger l'état
+            // ----------------------------------------------
+
             const reachedArray = JSON.parse(localStorage.getItem('reached'));
             reached.clear();
             if (reachedArray) {
@@ -155,11 +174,27 @@
             document.getElementById('marketingLvl').textContent = marketingLvl;
             document.getElementById('adCost').textContent = adCost.toFixed(2);
 
+            // --- NOUVEAU : Mise à jour de l'affichage IT ---
             document.getElementById("trust").textContent = trust;
+            document.getElementById("nextTrust").textContent = nextTrustAt.toLocaleString();
+            document.getElementById("ops").textContent = ops;
             document.getElementById("cpuCount").textContent = cpuCount;
             document.getElementById("ramCount").textContent = ramCount;
             document.getElementById("opsMax").textContent = opsMax;
-            document.getElementById("nextTrust").textContent = nextTrustAt.toLocaleString();
+            // ------------------------------------------------
+
+            // --- NOUVEAU : Débloquer la section si nécessaire ---
+            if (itResourcesUnlocked) {
+                unlockITResources(true); // Passer un paramètre pour éviter d'afficher le message "unlocked!" à chaque chargement
+            }
+            // -----------------------------------------------------
+
+            // Appeler les fonctions pour mettre à jour l'état des boutons après le chargement
+            PublicDemand();
+            updateAutoCapserButton();
+            updateMarketingButton();
+            updateCPUButton();
+            updateRAMButton();
         }
 
         // Afficher le message de dernière sauvegarde chargée
@@ -181,7 +216,7 @@
         }
 
         function resetGame() {
-            // Réinitialiser les variables
+                    // Réinitialiser les variables
             caps = 0;
             unsold = 0;
             funds = 0;
@@ -189,7 +224,17 @@
             priceAutoCapser = 15;
             marketingLvl = 1;
             adCost = 100;
-            
+
+            // --- NOUVEAU : Réinitialisation des ressources IT ---
+            trust = 0;
+            nextTrustAt = 10000;
+            ops = 0;
+            cpuCount = 1;
+            ramCount = 1;
+            opsMax = 1000;
+            itResourcesUnlocked = false;
+            // ---------------------------------------------------
+
             reached.clear();
             localStorage.clear(); // supprime toutes les sauvegardes
 
@@ -202,10 +247,20 @@
             document.getElementById('adCost').textContent = adCost.toFixed(2);
             document.getElementById('demand').textContent = "0";
 
+            // --- NOUVEAU : Mise à jour de l'affichage IT ---
+            document.getElementById("trust").textContent = trust;
+            document.getElementById("nextTrust").textContent = nextTrustAt.toLocaleString();
+            document.getElementById("ops").textContent = ops;
+            document.getElementById("cpuCount").textContent = cpuCount;
+            document.getElementById("ramCount").textContent = ramCount;
+            document.getElementById("opsMax").textContent = opsMax;
+            document.getElementById('itResourcesDiv').style.display = 'none'; // Cacher la section IT
+            // ------------------------------------------------
+
             showTerminalMessage("Game reset ! All values set to 0", 5000);
 
             // Redémarrer la session
-            sessionStart = Date.now();
+            // sessionStart = Date.now(); // Déclarer 'let sessionStart' si vous voulez faire ça
         }
 
         // lier le bouton à la fonction
@@ -457,13 +512,16 @@
             }
         }, 2000);
 
-        function unlockITResources() {
+        function unlockITResources(loading = false) {
             const div = document.getElementById('itResourcesDiv');
             if(div.style.display !== 'block') {
                 div.style.display = 'block';
+                itResourcesUnlocked = true; // Définir l'état sur débloqué
                 updateCPUButton();
                 updateRAMButton();
-                showTerminalMessage("IT Resources unlocked!");
+                if(!loading) { // Afficher le message uniquement si ce n'est pas un chargement
+                    showTerminalMessage("IT Resources unlocked!");
+                }
             }
         }
 
