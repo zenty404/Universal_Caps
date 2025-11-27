@@ -22,19 +22,18 @@
     <button  id="MakeCaps" onclick="capsClic(1)">Make Cap</button>
 
     <div id="businessDiv">
-        <div style="display: flex; align-items: center; gap: 10px;">
+        <div>
             <b>Business</b>
-            <hr>
         </div>
         
         Available Funds: $ <span id="funds">0.00</span><br>
         Unsold Inventory: <span id="unsoldClips">0</span><br> 
-        <button class="button2" id="btnLowerPrice" onclick="lowerPrice()">lower</button>
-        <button class="button2" id="btnRaisePrice" onclick="raisePrice()">raise</button>
+        <button id="btnLowerPrice" onclick="lowerPrice()">lower</button>
+        <button id="btnRaisePrice" onclick="raisePrice()">raise</button>
         Price per Caps: $ <span id="margin">0.25</span><br>
         Public Demand: <span id="demand">32</span>%<br>
         <br>    
-        <button class="button2" id="btnExpandMarketing" onclick="buyAds()" disabled="">Marketing</button> <span> Level: </span><span id="marketingLvl">1</span><br>
+        <button id="btnExpandMarketing" onclick="buyAds()" disabled="">Marketing</button> <span> Level: </span><span id="marketingLvl">1</span><br>
         Cost: $ <span id="adCost">100.00</span><br>
         <br>    
 
@@ -43,7 +42,7 @@
                 <b>Automatisation Section</b>
                 <hr>
             </div>
-            <button class="button2" id="BuyAutoCapser" disabled="">Buy AutoCapser</button> 
+            <button id="BuyAutoCapser" disabled="">Buy AutoCapser</button> 
             Price : $ <span id="priceAutoCapser">15</span>
 
         </div>
