@@ -13,64 +13,66 @@
         <div class="terminal-message" id="terminalMessage" aria-live="polite" aria-atomic="true"></div>
         <button id="resetBtn" style="position:absolute; top:10px; right:10px;">Reset Game</button>
     </header>
-
-    <h1>
-        Caps : <span id="caps">0</span>
-       
-    </h1>
-
-    <button  id="MakeCaps" onclick="capsClic(1)">Make Cap</button>
-
-    <div id="businessDiv">
+    <div style="display: flex;">
         <div>
-            <b>Business</b>
-        </div>
-        
-        Available Funds: $ <span id="funds">0.00</span><br>
-        Unsold Inventory: <span id="unsoldClips">0</span><br> 
-        <button id="btnLowerPrice" onclick="lowerPrice()">lower</button>
-        <button id="btnRaisePrice" onclick="raisePrice()">raise</button>
-        Price per Caps: $ <span id="margin">0.25</span><br>
-        Public Demand: <span id="demand">32</span>%<br>
-        <br>    
-        <button id="btnExpandMarketing" onclick="buyAds()" disabled="">Marketing</button> <span> Level: </span><span id="marketingLvl">1</span><br>
-        Cost: $ <span id="adCost">100.00</span><br>
-        <br>    
+            <h1>
+                Caps : <span id="caps">0</span>
+            
+            </h1>
 
-        <div id="automatisationDiv">
-            <div style="display: flex; align-items: center; gap: 10px,">
-                <b>Automatisation Section</b>
-                <hr>
+            <button  id="MakeCaps" onclick="capsClic(1)">Make Cap</button>
+
+            <div id="businessDiv">
+                <div>
+                    <b>Business</b>
+                </div>
+                
+                Available Funds: $ <span id="funds">0.00</span><br>
+                Unsold Inventory: <span id="unsoldClips">0</span><br> 
+                <button id="btnLowerPrice" onclick="lowerPrice()">lower</button>
+                <button id="btnRaisePrice" onclick="raisePrice()">raise</button>
+                Price per Caps: $ <span id="margin">0.25</span><br>
+                Public Demand: <span id="demand">32</span>%<br>
+                <br>    
+                <button id="btnExpandMarketing" onclick="buyAds()" disabled="">Marketing</button> <span> Level: </span><span id="marketingLvl">1</span><br>
+                Cost: $ <span id="adCost">100.00</span><br>
+                <br>    
+
+                <div id="automatisationDiv">
+                    <div style="display: flex; align-items: center; gap: 10px,">
+                        <b>Automatisation Section</b>
+                        <hr>
+                    </div>
+                    <button id="BuyAutoCapser" disabled="">Buy AutoCapser</button> 
+                    Price : $ <span id="priceAutoCapser">15</span>
+
+                </div>
+                
             </div>
-            <button id="BuyAutoCapser" disabled="">Buy AutoCapser</button> 
-            Price : $ <span id="priceAutoCapser">15</span>
+        </div>
+
+        <div id="itResourcesDiv" style="display: flex;">
+            <h2>IT Resources</h2>
+
+            <div><b>Trust:</b> <span id="trust">0</span></div>
+            <div><b>Next Trust at:</b> <span id="nextTrust">1 000</span> caps</div>
+
+            <br>
+
+            <div><b>Ops:</b> <span id="ops">0</span> / <span id="opsMax">1000</span></div>
+
+            <br>
+
+            <button id="btnBuyCPU" onclick="buyCPU()" disabled>Buy CPU (1 Trust)</button>
+            <span> CPUs: <span id="cpuCount">1</span></span>
+
+            <br><br>
+
+            <button id="btnBuyRAM" onclick="buyRAM()" disabled>Buy RAM (1 Trust)</button>
+            <span> RAM: <span id="ramCount">1</span></span>
 
         </div>
-        
     </div>
-
-    <div id="itResourcesDiv" style="display:none;">
-        <h2>IT Resources</h2>
-
-        <div><b>Trust:</b> <span id="trust">0</span></div>
-        <div><b>Next Trust at:</b> <span id="nextTrust">1 000</span> caps</div>
-
-        <br>
-
-        <div><b>Ops:</b> <span id="ops">0</span> / <span id="opsMax">1000</span></div>
-
-        <br>
-
-        <button id="btnBuyCPU" onclick="buyCPU()" disabled>Buy CPU (1 Trust)</button>
-        <span> CPUs: <span id="cpuCount">1</span></span>
-
-        <br><br>
-
-        <button id="btnBuyRAM" onclick="buyRAM()" disabled>Buy RAM (1 Trust)</button>
-        <span> RAM: <span id="ramCount">1</span></span>
-
-    </div>
-
     <script>
 
         // ---Variable---
