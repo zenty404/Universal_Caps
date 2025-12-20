@@ -11,16 +11,16 @@
     <header class="terminal">
         <div class="terminal-title">Welcome to Universal Caps !</div>
         <div class="terminal-message" id="terminalMessage" aria-live="polite" aria-atomic="true"></div>
-        <button id="resetBtn" style="position:absolute; top:10px; right:10px;">Reset Game</button>
+        <button id="resetBtn">Reset Game</button>
     </header>
-    <div style="display: flex;">
+
+    <div class="game-container">
         <div>
             <h1>
                 Caps : <span id="caps">0</span>
-            
             </h1>
 
-            <button  id="MakeCaps" onclick="capsClic(1)">Make Cap</button>
+            <button id="MakeCaps" onclick="capsClic(1)">Make Cap</button>
 
             <div id="businessDiv">
                 <div>
@@ -39,7 +39,7 @@
                 <br>    
 
                 <div id="automatisationDiv">
-                    <div style="display: flex; align-items: center; gap: 10px,">
+                    <div class="auto-header">
                         <b>Automatisation Section</b>
                         <hr>
                     </div>
@@ -51,7 +51,7 @@
             </div>
         </div>
 
-        <div id="itResourcesDiv" style="display: flex;">
+        <div id="itResourcesDiv" class="itResourcesDiv">
             <h2>IT Resources</h2>
 
             <div><b>Trust:</b> <span id="trust">0</span></div>
@@ -73,8 +73,8 @@
 
         </div>
     </div>
+    
     <script>
-
         // ---Variable---
 
         // compteur de caps simple
