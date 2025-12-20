@@ -9,6 +9,8 @@ export function saveGame() {
     localStorage.setItem('priceAutoCapser', state.priceAutoCapser);
     localStorage.setItem('marketingLvl', state.marketingLvl);
     localStorage.setItem('adCost', state.adCost);
+    localStorage.setItem('hasImprovedAutoClippers', state.hasImprovedAutoClippers);
+    localStorage.setItem('autoCapserPerformance', state.autoCapserPerformance);
     
     // IT
     localStorage.setItem('trust', state.trust);
@@ -66,6 +68,16 @@ export function loadGame() {
     
     if(state.caps > 0) {
         showTerminalMessage("Last save loaded.");
+    }
+
+        state.hasImprovedAutoClippers = localStorage.getItem('hasImprovedAutoClippers') === 'true';
+    // Si pas de sauvegarde, on revient à 1
+    state.autoCapserPerformance = parseFloat(localStorage.getItem('autoCapserPerformance')) || 1;
+
+    // Si on a déjà l'amélioration au chargement, on s'assure que le bouton reste caché
+    if (state.hasImprovedAutoClippers) {
+        const btn = document.getElementById('btnImproveAuto');
+        if(btn) btn.style.display = 'none';
     }
 }
 

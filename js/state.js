@@ -7,6 +7,9 @@ export const state = {
     // AutoCapser
     autoCapsers: 0,
     priceAutoCapser: 15,
+
+    autoCapserPerformance: 1, // 100% de base
+    hasImprovedAutoClippers: false,
     
     // Marketing
     marketingLvl: 1,

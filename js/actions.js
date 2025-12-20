@@ -101,7 +101,9 @@ export function buyRAM() {
 
 export function autoGenerateCaps() {
     if(state.autoCapsers > 0){
-        makeCaps(state.autoCapsers);
+        // On multiplie par la performance (qui sera de 1.5 après l'achat)
+        const amount = state.autoCapsers * state.autoCapserPerformance;
+        makeCaps(amount);
     }
 }
 
@@ -152,5 +154,38 @@ export function processOps() {
         state.ops += state.cpuCount;
         if (state.ops > state.opsMax) state.ops = state.opsMax;
         document.getElementById("ops").textContent = state.ops;
+    }
+}
+
+export function buyImprovedAutoClippers() {
+    // Le coût reste en Ops (disons 500 Ops pour l'exemple)
+    if (state.ops >= 500) {
+        state.ops -= 500;
+        state.hasImprovedAutoClippers = true;
+        
+        // C'est ici qu'on change le bonus : +0.50 pour 50%
+        state.autoCapserPerformance += 0.50; 
+        
+        // On cache le bouton une fois acheté
+        document.getElementById('btnImproveAuto').style.display = 'none';
+        
+        showTerminalMessage("AutoCapsers performance increased by 50%!");
+        updateAllDisplays();
+    }
+}
+
+export function checkProjects() {
+    // Condition : Pas encore acheté ET Caps totaux >= 10 000
+    if (!state.hasImprovedAutoClippers && state.caps >= 10000) {
+        const btn = document.getElementById('btnImproveAuto');
+        
+        // On l'affiche s'il est caché
+        if (btn.style.display === 'none') {
+            btn.style.display = 'block';
+            showTerminalMessage("New Project available: Improved AutoCapsers");
+        }
+        
+        // On gère l'état grisé (disabled) si on n'a pas assez d'Ops pour payer
+        btn.disabled = state.ops < 500;
     }
 }

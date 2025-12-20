@@ -20,6 +20,8 @@ document.addEventListener('DOMContentLoaded', () => {
     
     document.getElementById('BuyAutoCapser').addEventListener('click', Actions.buyAutoCapser);
     document.getElementById('btnExpandMarketing').addEventListener('click', Actions.buyAds);
+
+    document.getElementById('btnImproveAuto').addEventListener('click', Actions.buyImprovedAutoClippers);
     
     document.getElementById('btnBuyCPU').addEventListener('click', Actions.buyCPU);
     document.getElementById('btnBuyRAM').addEventListener('click', Actions.buyRAM);
@@ -33,8 +35,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // Auto Sell (1 sec)
     setInterval(Actions.autoSell, 1000);
 
-    // Generation Ops (1 sec)
-    setInterval(Actions.processOps, 1000);
+    // Generation Ops (1 sec) - MODIFIÉ ICI
+    setInterval(() => {
+        Actions.processOps();     // On génère les points d'Ops
+        Actions.checkProjects();  // On vérifie si on débloque le projet
+    }, 1000);
 
     // Mise à jour Demande & Boutons (plus rapide pour réactivité : 200ms)
     setInterval(() => {
