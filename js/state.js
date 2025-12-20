@@ -2,6 +2,7 @@ export const state = {
     caps: 0,
     unsold: 0,
     funds: 0,
+    revenuePerSecond: 0,
     
     // AutoCapser
     autoCapsers: 0,

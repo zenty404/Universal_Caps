@@ -45,6 +45,7 @@ export function updateAllDisplays() {
     setText('caps', state.caps);
     setText('unsoldClips', state.unsold);
     setText('funds', state.funds.toFixed(2));
+    setText('avgRev', state.revenuePerSecond.toFixed(2));
     setText('priceAutoCapser', state.priceAutoCapser.toFixed(2));
     setText('marketingLvl', state.marketingLvl);
     setText('adCost', state.adCost.toFixed(2));

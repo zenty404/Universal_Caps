@@ -109,20 +109,42 @@ export function autoSell() {
     const demand = parseFloat(document.getElementById('demand').textContent);
     const price = parseFloat(document.getElementById('margin').textContent);
     
-    if (state.unsold <= 0 || demand <= 0) return;
+    // Par défaut, le revenu est 0 si on ne vend rien
+    state.revenuePerSecond = 0; 
+
+    if (state.unsold <= 0 || demand <= 0) {
+        // Important : on met à jour l'affichage même si c'est 0
+        updateRevenueDisplay(); 
+        return;
+    }
     
     let sold = Math.floor(state.unsold * (demand / 100));
     if (sold > state.unsold) sold = state.unsold; 
 
     if (sold > 0) {
         state.unsold -= sold;
-        state.funds += sold * price;
         
+        // Calcul du gain
+        const revenue = sold * price;
+        state.funds += revenue;
+        
+        // On enregistre ce gain comme étant notre "Revenu par seconde"
+        state.revenuePerSecond = revenue;
+
         // Update UI
         document.getElementById('unsoldClips').textContent = state.unsold;
         document.getElementById('funds').textContent = state.funds.toFixed(2);
-        updateButtons(); // Car les fonds ont changé
+        updateButtons(); 
     }
+    
+    // On met à jour l'affichage du revenu
+    updateRevenueDisplay();
+}
+
+// Ajoute cette petite fonction utilitaire à la fin du fichier ou juste après autoSell
+function updateRevenueDisplay() {
+    const el = document.getElementById('avgRev');
+    if(el) el.textContent = state.revenuePerSecond.toFixed(2);
 }
 
 export function processOps() {
