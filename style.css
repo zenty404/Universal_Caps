@@ -51,6 +51,7 @@ body {
 /* Le conteneur principal qui met les colonnes côte à côte */
 .game-container {
     display: flex;
+    flex-direction: row;
 }
 
 /* L'en-tête de la section automatisation (titre + ligne) */
@@ -69,4 +70,14 @@ body {
     gap: 10px;              /* Espacement entre chaque élément (Trust, Ops, Boutons...) */
     padding-left: 20px;     /* Espace après la ligne de séparation */
     min-width: 300px;       /* Largeur minimum pour que ce soit propre */
+}
+
+.btnBuyCPU {
+    width: 150px;
+    height: 50px;
+}
+
+.btnBuyRAM {
+    width: 150px;
+    height: 50px;
 }

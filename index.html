@@ -14,17 +14,21 @@
         <button id="resetBtn">Reset Game</button>
     </header>
 
-    <div class="game-container">
-        <div>
-            <h1>
+    <div>
+        <h1>
                 Caps : <span id="caps">0</span>
             </h1>
 
             <button id="MakeCaps">Make Cap</button>
+    </div>
+
+    <div class="game-container">
+        <div>
+            
 
             <div id="businessDiv">
                 <div>
-                    <b>Business</b>
+                    <h2>Business</h2>
                 </div>
                 
                 Available Funds: $ <span id="funds">0.00</span><br>
@@ -63,12 +67,12 @@
 
             <br>
 
-            <button id="btnBuyCPU" disabled>Buy CPU (1 Trust)</button>
+            <button class="btnBuyCPU" id="btnBuyCPU" disabled>Buy CPU (1 Trust)</button>
             <span> CPUs: <span id="cpuCount">1</span></span>
 
             <br><br>
 
-            <button id="btnBuyRAM" disabled>Buy RAM (1 Trust)</button>
+            <button class="btnBuyRAM" id="btnBuyRAM" disabled>Buy RAM (1 Trust)</button>
             <span> RAM: <span id="ramCount">1</span></span>
 
         </div>
