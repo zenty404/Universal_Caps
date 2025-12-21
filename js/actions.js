@@ -182,9 +182,9 @@ export function autoSell() {
         state.revenuePerSecond = revenue;
 
         // Mise à jour UI
-        document.getElementById('unsoldClips').textContent = state.unsold;
+        document.getElementById('unsoldClips').textContent = Math.floor(state.unsold).toLocaleString();
         document.getElementById('funds').textContent = state.funds.toFixed(2);
-        updateButtons(); 
+        updateButtons();
     }
     
     updateRevenueDisplay();
