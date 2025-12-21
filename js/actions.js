@@ -177,9 +177,12 @@ export function buyImprovedAutoClippers() {
 export function checkProjects() {
     // Condition : Pas encore acheté ET Caps totaux >= 10 000
     if (!state.hasImprovedAutoClippers && state.caps >= 10000) {
+        
+        // NOTE : On a retiré la gestion de projectContainer ici car c'est géré par ui.js maintenant
+        
         const btn = document.getElementById('btnImproveAuto');
         
-        // On l'affiche s'il est caché
+        // On affiche le bouton s'il est caché
         if (btn.style.display === 'none') {
             btn.style.display = 'block';
             showTerminalMessage("New Project available: Improved AutoCapsers");

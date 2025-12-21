@@ -21,12 +21,17 @@ export function showTerminalMessage(text, duration = 5000) {
 
 export function unlockITResources(loading = false) {
     const div = document.getElementById('itResourcesDiv');
-    
+    const projectsDiv = document.getElementById('projectsDiv'); // <--- Ajout
+
     // Si déjà visible, on ne fait rien
     if (state.itResourcesUnlocked && div.style.display !== 'none' && !loading) return;
 
     if (!state.itResourcesUnlocked || div.style.display === 'none') {
         div.style.display = 'flex';
+        
+        // On affiche aussi la colonne Projets dès le début de l'IT
+        if (projectsDiv) projectsDiv.style.display = 'flex'; // <--- Ajout
+
         state.itResourcesUnlocked = true;
 
         if (!loading) {
@@ -39,6 +44,10 @@ export function unlockITResources(loading = false) {
 export function hideITResources() {
     const div = document.getElementById('itResourcesDiv');
     if(div) div.style.display = 'none';
+
+    // On cache aussi les projets au Reset
+    const projectsDiv = document.getElementById('projectsDiv'); // <--- Ajout
+    if(projectsDiv) projectsDiv.style.display = 'none';         // <--- Ajout
 }
 
 export function updateAllDisplays() {
