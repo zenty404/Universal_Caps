@@ -15,7 +15,9 @@ export const state = {
     autoCapsers: 0,
     priceAutoCapser: 15,
     autoCapserPerformance: 1,       // 1 = 100% (vitesse normale)
-    hasImprovedAutoClippers: false, // Est-ce qu'on a acheté l'upgrade ?
+    
+    // CORRECTION ICI : Renommé en Capsers
+    hasImprovedAutoCapsers: false, // Est-ce qu'on a acheté l'upgrade ?
 
     // --- Marketing & Demande ---
     marketingLvl: 1,
@@ -33,8 +35,6 @@ export const state = {
     // --- Système & Progression ---
     sessionStart: Date.now(),   // Pour calculer le temps de jeu
     
-    // Les 'Set' sont des listes qui ne contiennent que des valeurs uniques.
-    // Idéal pour stocker des paliers qu'on ne veut atteindre qu'une seule fois.
     reached: new Set(), 
     milestones: [100, 1000, 10000, 100000, 1000000, 10000000, 100000000]
 };
