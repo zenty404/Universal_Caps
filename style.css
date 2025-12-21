@@ -81,3 +81,8 @@ body {
     width: 150px;
     height: 50px;
 }
+
+.projectsDiv {
+    display: flex;
+    flex-direction: column;
+}
