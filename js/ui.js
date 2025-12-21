@@ -72,8 +72,8 @@ export function hideITResources() {
 
 export function updateAllDisplays() {
     // 1. Économie
-    setText('caps', state.caps);
-    setText('unsoldClips', state.unsold);
+    setText('caps', Math.floor(state.caps).toLocaleString());
+    setText('unsoldClips', Math.floor(state.unsold).toLocaleString());
     setText('funds', state.funds.toFixed(2));
     setText('avgRev', state.revenuePerSecond.toFixed(2));
     

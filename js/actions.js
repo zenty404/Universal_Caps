@@ -48,8 +48,8 @@ export function makeCaps(amount) {
     state.unsold += amount;
     
     // Mise à jour rapide du DOM (plus performant que updateAllDisplays pour un clic fréquent)
-    document.getElementById('caps').textContent = state.caps;
-    document.getElementById('unsoldClips').textContent = state.unsold;
+    document.getElementById('caps').textContent = Math.floor(state.caps).toLocaleString();
+    document.getElementById('unsoldClips').textContent = Math.floor(state.unsold).toLocaleString();
 
     checkMilestones();
     checkTrustGain();
