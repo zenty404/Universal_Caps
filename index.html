@@ -15,73 +15,62 @@
     </header>
 
     <div>
-        <h1>
-                Caps : <span id="caps">0</span>
-        </h1>
-
+        <h1>Caps : <span id="caps">0</span></h1>
         <button id="MakeCaps">Make Cap</button>
     </div>
 
     <div class="game-container">
-        <div>
+        
+        <div id="businessDiv">
+            <h2>Business</h2>
             
+            Available Funds: $ <span id="funds">0.00</span><br>
+            Avg. Rev. / sec: $ <span id="avgRev">0.00</span><br>
+            Unsold Inventory: <span id="unsoldClips">0</span><br> 
+            
+            <button id="btnLowerPrice">lower</button>
+            <button id="btnRaisePrice">raise</button>
+            Price per Caps: $ <span id="margin">0.25</span><br>
+            Public Demand: <span id="demand">32</span>%<br>
+            <br>    
+            
+            <button id="btnExpandMarketing" disabled>Marketing</button> 
+            <span> Level: </span><span id="marketingLvl">1</span><br>
+            Cost: $ <span id="adCost">100.00</span><br>
+            <br>    
 
-            <div id="businessDiv">
-                <div>
-                    <h2>Business</h2>
+            <div id="automatisationDiv">
+                <div class="auto-header">
+                    <b>Automatisation Section</b>
+                    <hr>
                 </div>
-                
-                Available Funds: $ <span id="funds">0.00</span><br>
-                Avg. Rev. / sec: $ <span id="avgRev">0.00</span><br>
-                Unsold Inventory: <span id="unsoldClips">0</span><br> 
-                <button id="btnLowerPrice">lower</button>
-                <button id="btnRaisePrice">raise</button>
-                Price per Caps: $ <span id="margin">0.25</span><br>
-                Public Demand: <span id="demand">32</span>%<br>
-                <br>    
-                <button id="btnExpandMarketing" disabled="">Marketing</button> <span> Level: </span><span id="marketingLvl">1</span><br>
-                Cost: $ <span id="adCost">100.00</span><br>
-                <br>    
-
-                <div id="automatisationDiv">
-                    <div class="auto-header">
-                        <b>Automatisation Section</b>
-                        <hr>
-                    </div>
-                    <button id="BuyAutoCapser" disabled="">Buy AutoCapser</button> 
-                    Price : $ <span id="priceAutoCapser">15</span>
-
-                </div>
-                
+                <button id="BuyAutoCapser" disabled>Buy AutoCapser</button> 
+                Price : $ <span id="priceAutoCapser">15</span>
             </div>
         </div>
 
-        <div id="itResourcesDiv" class="itResourcesDiv" style="display: none;">
+        <div class="itResourcesDiv" id="itResourcesDiv" style="display: none;">
             <h2>IT Resources</h2>
 
             <div><b>Trust:</b> <span id="trust">0</span></div>
             <div><b>Next Trust at:</b> <span id="nextTrust">1 000</span> caps</div>
-
             <br>
-
             <div><b>Ops:</b> <span id="ops">0</span> / <span id="opsMax">1000</span></div>
-
             <br>
 
             <button class="btnBuyCPU" id="btnBuyCPU" disabled>Buy CPU (1 Trust)</button>
             <span> CPUs: <span id="cpuCount">1</span></span>
-
             <br><br>
 
             <button class="btnBuyRAM" id="btnBuyRAM" disabled>Buy RAM (1 Trust)</button>
             <span> RAM: <span id="ramCount">1</span></span>
         </div>
 
-        <div class="projectsDiv" id="projectsDiv">
-                <h2>Projects</h2>
-                <button id="btnImproveAuto" style="display: none;">
-                    Improved AutoCapsers (500 Ops)
-                </button>
+        <div class="projectsDiv" id="projectsDiv" style="display: none;">
+            <h2>Projects</h2>
+            <button id="btnImproveAuto" style="display: none;">
+                Improved AutoCapsers (500 Ops)
+            </button>
         </div>   
 
     </div>

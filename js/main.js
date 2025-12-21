@@ -1,53 +1,63 @@
+/**
+ * MAIN.JS
+ * Point d'entrée de l'application.
+ * 1. Charge les sauvegardes.
+ * 2. Attache les événements (Clics).
+ * 3. Lance les boucles temporelles (Timers).
+ */
+
 import { loadGame, saveGame, resetGame } from './storage.js';
 import * as Actions from './actions.js';
 import { updateButtons } from './ui.js';
 
-// Initialisation au chargement de la page
+// Attendre que le HTML soit totalement chargé
 document.addEventListener('DOMContentLoaded', () => {
     
-    // 1. Charger la partie
+    // --- 1. CHARGEMENT ---
     loadGame();
 
-    // 2. Attacher les événements (Event Listeners)
-    // C'est ici qu'on remplace les "onclick" du HTML
+    // --- 2. ÉVÉNEMENTS (CLICS) ---
     
+    // Système
     document.getElementById('resetBtn').addEventListener('click', resetGame);
     
+    // Production
     document.getElementById('MakeCaps').addEventListener('click', () => Actions.makeCaps(1));
     
+    // Business
     document.getElementById('btnLowerPrice').addEventListener('click', Actions.lowerPrice);
     document.getElementById('btnRaisePrice').addEventListener('click', Actions.raisePrice);
-    
     document.getElementById('BuyAutoCapser').addEventListener('click', Actions.buyAutoCapser);
     document.getElementById('btnExpandMarketing').addEventListener('click', Actions.buyAds);
 
-    document.getElementById('btnImproveAuto').addEventListener('click', Actions.buyImprovedAutoClippers);
-    
+    // IT & Projets
     document.getElementById('btnBuyCPU').addEventListener('click', Actions.buyCPU);
     document.getElementById('btnBuyRAM').addEventListener('click', Actions.buyRAM);
+    document.getElementById('btnImproveAuto').addEventListener('click', Actions.buyImprovedAutoClippers);
 
 
-    // 3. Lancer les boucles de jeu (Game Loops)
+    // --- 3. BOUCLES DE JEU (LOOPS) ---
     
-    // Auto Generation (1 sec)
-    setInterval(Actions.autoGenerateCaps, 1000);
-    
-    // Auto Sell (1 sec)
-    setInterval(Actions.autoSell, 1000);
-
-    // Generation Ops (1 sec) - MODIFIÉ ICI
+    // Boucle A (1 seconde) : Production et Vente
     setInterval(() => {
-        Actions.processOps();     // On génère les points d'Ops
-        Actions.checkProjects();  // On vérifie si on débloque le projet
+        Actions.autoGenerateCaps();
+        Actions.autoSell();
     }, 1000);
 
-    // Mise à jour Demande & Boutons (plus rapide pour réactivité : 200ms)
+    // Boucle B (1 seconde) : Informatique et Projets
+    setInterval(() => {
+        Actions.processOps();     // Génération Ops
+        Actions.checkProjects();  // Vérification conditions déblocage
+    }, 1000);
+
+    // Boucle C (Rapide - 200ms) : Interface et Réactivité
+    // On sépare ça pour que l'interface semble fluide quand on change les prix
     setInterval(() => {
         Actions.calculatePublicDemand();
         updateButtons();
     }, 200);
 
-    // Sauvegarde auto (5 sec)
+    // Boucle D (5 secondes) : Sauvegarde automatique
     setInterval(saveGame, 5000);
 
 });

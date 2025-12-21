@@ -1,93 +1,113 @@
+/**
+ * UI.JS
+ * Ce fichier gère uniquement l'affichage (le DOM).
+ * Il ne fait aucun calcul mathématique, il se contente d'afficher les valeurs du State.
+ */
+
 import { state } from './state.js';
 
-// Petit helper pour vérifier si un élément existe avant de toucher
+// --- Fonctions Utilitaires ---
+
+// Helper pour modifier le texte d'un élément sans faire planter le script si l'ID n'existe pas
 const setText = (id, value) => {
     const el = document.getElementById(id);
     if (el) el.textContent = value;
 };
 
+// --- Gestion des Messages (Le Terminal en haut) ---
+
 export function showTerminalMessage(text, duration = 5000) {
     const el = document.getElementById('terminalMessage');
     if (!el) return;
+
     el.textContent = text;
     el.classList.add('visible');
     
-    // On attache le timeout à l'élément pour pouvoir le clear si un nouveau message arrive vite
+    // On annule le timer précédent s'il y en a un (pour éviter que le message disparaisse trop vite)
     clearTimeout(el._hideTimeout);
+    
+    // On crée un nouveau timer pour cacher le message
     el._hideTimeout = setTimeout(() => {
         el.classList.remove('visible');
     }, duration);
 }
 
+// --- Gestion de la visibilité des sections (Déblocage) ---
+
 export function unlockITResources(loading = false) {
-    const div = document.getElementById('itResourcesDiv');
-    const projectsDiv = document.getElementById('projectsDiv'); // <--- Ajout
+    const divIT = document.getElementById('itResourcesDiv');
+    const divProjects = document.getElementById('projectsDiv');
 
-    // Si déjà visible, on ne fait rien
-    if (state.itResourcesUnlocked && div.style.display !== 'none' && !loading) return;
+    // Sécurité : Si déjà débloqué et affiché, on arrête là pour économiser des ressources
+    if (state.itResourcesUnlocked && divIT.style.display !== 'none' && !loading) return;
 
-    if (!state.itResourcesUnlocked || div.style.display === 'none') {
-        div.style.display = 'flex';
-        
-        // On affiche aussi la colonne Projets dès le début de l'IT
-        if (projectsDiv) projectsDiv.style.display = 'flex'; // <--- Ajout
-
+    // Si c'est la première fois ou si c'est caché
+    if (!state.itResourcesUnlocked || divIT.style.display === 'none') {
+        divIT.style.display = 'flex';
         state.itResourcesUnlocked = true;
 
+        // On affiche aussi la colonne Projets (même vide) pour garder la mise en page
+        if (divProjects) divProjects.style.display = 'flex';
+
+        // Petit message sympa pour le joueur (sauf si on charge une sauvegarde)
         if (!loading) {
             showTerminalMessage("IT Resources unlocked! (Initial Hardware: 1 CPU, 1 RAM)");
         }
+        
+        // On force une mise à jour immédiate pour éviter de voir des "0" partout
         updateAllDisplays();
     }
 }
 
 export function hideITResources() {
-    const div = document.getElementById('itResourcesDiv');
-    if(div) div.style.display = 'none';
-
-    // On cache aussi les projets au Reset
-    const projectsDiv = document.getElementById('projectsDiv'); // <--- Ajout
-    if(projectsDiv) projectsDiv.style.display = 'none';         // <--- Ajout
+    // Fonction utilisée lors du RESET du jeu
+    const divIT = document.getElementById('itResourcesDiv');
+    const divProjects = document.getElementById('projectsDiv');
+    
+    if(divIT) divIT.style.display = 'none';
+    if(divProjects) divProjects.style.display = 'none';
 }
 
+// --- Mise à jour de l'Interface (Boucle principale) ---
+
 export function updateAllDisplays() {
+    // 1. Économie
     setText('caps', state.caps);
     setText('unsoldClips', state.unsold);
     setText('funds', state.funds.toFixed(2));
     setText('avgRev', state.revenuePerSecond.toFixed(2));
+    
+    // 2. Business & Marketing
     setText('priceAutoCapser', state.priceAutoCapser.toFixed(2));
     setText('marketingLvl', state.marketingLvl);
     setText('adCost', state.adCost.toFixed(2));
 
-    // IT Display
+    // 3. IT Resources
     setText('trust', state.trust);
-    setText('nextTrust', state.nextTrustAt.toLocaleString());
+    setText('nextTrust', state.nextTrustAt.toLocaleString()); // 'toLocaleString' met les espaces (ex: 1 000)
     setText('ops', state.ops);
     setText('cpuCount', state.cpuCount);
     setText('ramCount', state.ramCount);
     setText('opsMax', state.opsMax);
 
-    // Calcul dynamique de la demande pour l'affichage
-    // Note: La logique de calcul est dans actions.js normalement, 
-    // mais pour l'affichage simple on peut lire le DOM ou recalculer.
-    // Ici on laisse la boucle principale mettre à jour la demande via publicDemand()
+    // Note : La demande est gérée par updateDemandDisplay() appelée dans actions.js
     
+    // 4. État des boutons (Grisés ou non)
     updateButtons();
 }
 
 export function updateButtons() {
-    // AutoCapser
+    // Vérifie si on a assez d'argent pour acheter les upgrades
+    
     const btnAuto = document.getElementById('BuyAutoCapser');
     if(btnAuto) {
         btnAuto.disabled = state.funds < state.priceAutoCapser;
         btnAuto.textContent = `Buy AutoCapser ($${state.priceAutoCapser.toFixed(2)})`;
     }
 
-    // Marketing
     const btnMark = document.getElementById('btnExpandMarketing');
     if(btnMark) btnMark.disabled = state.funds < state.adCost;
 
-    // IT Buttons
     const btnCpu = document.getElementById('btnBuyCPU');
     if(btnCpu) btnCpu.disabled = state.trust < 1;
 
@@ -95,6 +115,7 @@ export function updateButtons() {
     if(btnRam) btnRam.disabled = state.trust < 1;
 }
 
+// Mises à jour spécifiques (pour performance)
 export function updateDemandDisplay(value) {
     setText('demand', value.toFixed(0));
 }
