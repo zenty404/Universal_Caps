@@ -1,0 +1,27 @@
+# --- Fichiers Systèmes (Mac & Windows) ---
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# --- Logs et fichiers temporaires ---
+*.log
+*.tmp
+
+# --- Éditeurs de code (VS Code, etc.) ---
+.vscode/
+.idea/
+*.swp
+
+# --- Futur : Node.js (si tu utilises npm plus tard) ---
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# --- Futur : Dossiers de build (si tu compiles ton code) ---
+dist/
+build/
+
+# --- Sécurité (Clés API, mots de passe) ---
+.env
+.env.local
