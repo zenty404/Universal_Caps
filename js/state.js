@@ -10,6 +10,9 @@ export const state = {
     unsold: 0,              // Stock invendu
     funds: 0,               // Argent disponible
     revenuePerSecond: 0,    // Calculé pour l'affichage uniquement
+    margin: 0.25,           // Prix de vente par cap
+    demand: 0,              // Demande publique (%)
+    saveVersion: 1,         // Version du format de sauvegarde
 
     // --- Production Automatisée (AutoCapsers) ---
     autoCapsers: 0,

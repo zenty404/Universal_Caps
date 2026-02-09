@@ -4,7 +4,7 @@
  */
 
 import { state } from './state.js';
-import { updateAllDisplays, showTerminalMessage, unlockITResources, updateDemandDisplay, updateMarginDisplay, updateButtons } from './ui.js';
+import { updateAllDisplays, showTerminalMessage, unlockITResources, updateDemandDisplay, updateMarginDisplay, updateRevenueDisplay } from './ui.js';
 
 // ==========================================
 // 1. FONCTIONS PRIVÉES
@@ -23,14 +23,10 @@ function checkTrustGain() {
     if (state.caps >= state.nextTrustAt) {
         state.trust++;
         showTerminalMessage(`Trust Increased! Current Trust: ${state.trust}`);
-        state.nextTrustAt += 3000;
+        // Incréments progressifs au lieu de +3000 fixe
+        state.nextTrustAt = Math.floor(state.nextTrustAt * 1.8);
         updateAllDisplays();
     }
-}
-
-function updateRevenueDisplay() {
-    const el = document.getElementById('avgRev');
-    if(el) el.textContent = state.revenuePerSecond.toFixed(2);
 }
 
 
@@ -41,11 +37,8 @@ function updateRevenueDisplay() {
 export function makeCaps(amount) {
     state.caps += amount;
     state.unsold += amount;
-    
-    document.getElementById('caps').textContent = Math.floor(state.caps).toLocaleString();
-    
-    // CORRECTION ICI : unsoldCaps
-    document.getElementById('unsoldCaps').textContent = Math.floor(state.unsold).toLocaleString();
+
+    updateAllDisplays();
 
     checkMilestones();
     checkTrustGain();
@@ -56,18 +49,14 @@ export function makeCaps(amount) {
 }
 
 export function lowerPrice() {
-    const marginSpan = document.getElementById('margin');
-    let price = parseFloat(marginSpan.textContent);
-    price = Math.max(0.01, price - 0.01);
-    updateMarginDisplay(price);
+    state.margin = Math.max(0.01, state.margin - 0.01);
+    updateMarginDisplay(state.margin);
     calculatePublicDemand();
 }
 
 export function raisePrice() {
-    const marginSpan = document.getElementById('margin');
-    let price = parseFloat(marginSpan.textContent);
-    price = Math.max(0.01, price + 0.01);
-    updateMarginDisplay(price);
+    state.margin = Math.max(0.01, state.margin + 0.01);
+    updateMarginDisplay(state.margin);
     calculatePublicDemand();
 }
 
@@ -75,7 +64,8 @@ export function buyAutoCapser() {
     if(state.funds >= state.priceAutoCapser){
         state.funds -= state.priceAutoCapser;
         state.autoCapsers += 1;
-        state.priceAutoCapser *= 1.25; 
+        state.priceAutoCapser *= 1.18;
+        showTerminalMessage(`AutoCapser purchased! Total: ${state.autoCapsers}`);
         updateAllDisplays();
     }
 }
@@ -85,6 +75,7 @@ export function buyAds() {
         state.funds -= state.adCost;
         state.marketingLvl += 1;
         state.adCost *= 3;
+        showTerminalMessage(`Marketing expanded! Level: ${state.marketingLvl}`);
         updateAllDisplays();
     }
 }
@@ -93,6 +84,7 @@ export function buyCPU() {
     if (state.trust < 1) return;
     state.trust--;
     state.cpuCount++;
+    showTerminalMessage(`CPU purchased! Total CPUs: ${state.cpuCount}`);
     updateAllDisplays();
 }
 
@@ -101,20 +93,21 @@ export function buyRAM() {
     state.trust--;
     state.ramCount++;
     state.opsMax = state.ramCount * 1000;
+    showTerminalMessage(`RAM purchased! Total RAM: ${state.ramCount} (Max Ops: ${state.opsMax})`);
     updateAllDisplays();
 }
 
 // --- Projets (Recherche) ---
 
-// CORRECTION ICI : Nom de fonction et variable
 export function buyImprovedAutoCapsers() {
     if (state.ops >= 500) {
         state.ops -= 500;
-        state.hasImprovedAutoCapsers = true; // Variable renommée
-        state.autoCapserPerformance += 0.50; 
-        
-        document.getElementById('btnImproveAuto').style.display = 'none';
-        
+        state.hasImprovedAutoCapsers = true;
+        state.autoCapserPerformance += 0.50;
+
+        const btn = document.getElementById('btnImproveAuto');
+        if (btn) btn.style.display = 'none';
+
         showTerminalMessage("AutoCapsers performance increased by 50%!");
         updateAllDisplays();
     }
@@ -126,11 +119,12 @@ export function buyImprovedAutoCapsers() {
 // ==========================================
 
 export function calculatePublicDemand() {
-    const price = parseFloat(document.getElementById('margin').textContent);
-    let demand = 200 * Math.exp(-10 * price);
+    const price = state.margin;
+    // Courbe plus douce : 100 * 0.98^(price*100)
+    let demand = 100 * Math.pow(0.98, price * 100);
     demand *= 1 + 0.05 * state.marketingLvl;
     demand = Math.max(0, Math.min(500, demand));
-    
+
     updateDemandDisplay(demand);
     return demand;
 }
@@ -143,33 +137,28 @@ export function autoGenerateCaps() {
 }
 
 export function autoSell() {
-    const demand = parseFloat(document.getElementById('demand').textContent);
-    const price = parseFloat(document.getElementById('margin').textContent);
-    
-    state.revenuePerSecond = 0; 
+    const demand = state.demand;
+    const price = state.margin;
+
+    state.revenuePerSecond = 0;
 
     if (state.unsold <= 0 || demand <= 0) {
-        updateRevenueDisplay(); 
+        updateRevenueDisplay();
         return;
     }
-    
+
     let sold = Math.floor(state.unsold * (demand / 100));
-    if (sold > state.unsold) sold = state.unsold; 
+    if (sold > state.unsold) sold = Math.floor(state.unsold);
 
     if (sold > 0) {
         state.unsold -= sold;
         const revenue = sold * price;
         state.funds += revenue;
-        
-        state.revenuePerSecond = revenue;
 
-        // CORRECTION ICI : unsoldCaps
-        document.getElementById('unsoldCaps').textContent = Math.floor(state.unsold).toLocaleString();
-        
-        document.getElementById('funds').textContent = state.funds.toFixed(2);
-        updateButtons(); 
+        state.revenuePerSecond = revenue;
+        updateAllDisplays();
     }
-    
+
     updateRevenueDisplay();
 }
 
@@ -177,21 +166,20 @@ export function processOps() {
     if (state.ops < state.opsMax) {
         state.ops += state.cpuCount;
         if (state.ops > state.opsMax) state.ops = state.opsMax;
-        document.getElementById("ops").textContent = state.ops;
+        updateAllDisplays();
     }
 }
 
 export function checkProjects() {
-    // CORRECTION ICI : Variable renommée
     if (!state.hasImprovedAutoCapsers && state.caps >= 10000) {
-        
         const btn = document.getElementById('btnImproveAuto');
-        
+        if (!btn) return;
+
         if (btn.style.display === 'none') {
             btn.style.display = 'block';
             showTerminalMessage("New Project available: Improved AutoCapsers");
         }
-        
+
         btn.disabled = state.ops < 500;
     }
 }

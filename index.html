@@ -11,41 +11,42 @@
     <header class="terminal">
         <div class="terminal-title">Welcome to Universal Caps !</div>
         <div class="terminal-message" id="terminalMessage" aria-live="polite" aria-atomic="true"></div>
-        <button id="resetBtn">Reset Game</button>
+        <button id="resetBtn" aria-label="Reset game">Reset Game</button>
     </header>
 
     <div>
         <h1>Caps : <span id="caps">0</span></h1>
-        <button id="MakeCaps">Make Cap</button>
+        <button id="MakeCaps" aria-label="Make one cap">Make Cap</button>
     </div>
 
     <div class="game-container">
-        
+
         <div id="businessDiv">
             <h2>Business</h2>
-            
+
             Available Funds: $ <span id="funds">0.00</span><br>
             Avg. Rev. / sec: $ <span id="avgRev">0.00</span><br>
-            Unsold Inventory: <span id="unsoldCaps">0</span><br> 
-            
-            <button id="btnLowerPrice">lower</button>
-            <button id="btnRaisePrice">raise</button>
+            Unsold Inventory: <span id="unsoldCaps">0</span><br>
+
+            <button id="btnLowerPrice" aria-label="Lower price">lower</button>
+            <button id="btnRaisePrice" aria-label="Raise price">raise</button>
             Price per Caps: $ <span id="margin">0.25</span><br>
-            Public Demand: <span id="demand">32</span>%<br>
-            <br>    
-            
-            <button id="btnExpandMarketing" disabled>Marketing</button> 
+            Public Demand: <span id="demand">0</span>%<br>
+            <br>
+
+            <button id="btnExpandMarketing" disabled aria-label="Expand marketing">Marketing</button>
             <span> Level: </span><span id="marketingLvl">1</span><br>
             Cost: $ <span id="adCost">100.00</span><br>
-            <br>    
+            <br>
 
             <div id="automatisationDiv">
                 <div class="auto-header">
                     <b>Automatisation Section</b>
                     <hr>
                 </div>
-                <button id="BuyAutoCapser" disabled>Buy AutoCapser</button> 
-                Price : $ <span id="priceAutoCapser">15</span>
+                <button id="BuyAutoCapser" disabled aria-label="Buy AutoCapser">Buy AutoCapser</button>
+                Price : $ <span id="priceAutoCapser">15</span><br>
+                AutoCapsers: <span id="autoCapserCount">0</span>
             </div>
         </div>
 
@@ -58,23 +59,23 @@
             <div><b>Ops:</b> <span id="ops">0</span> / <span id="opsMax">1000</span></div>
             <br>
 
-            <button class="btnBuyCPU" id="btnBuyCPU" disabled>Buy CPU (1 Trust)</button>
+            <button class="btnBuyCPU" id="btnBuyCPU" disabled aria-label="Buy CPU for 1 Trust">Buy CPU (1 Trust)</button>
             <span> CPUs: <span id="cpuCount">1</span></span>
             <br><br>
 
-            <button class="btnBuyRAM" id="btnBuyRAM" disabled>Buy RAM (1 Trust)</button>
+            <button class="btnBuyRAM" id="btnBuyRAM" disabled aria-label="Buy RAM for 1 Trust">Buy RAM (1 Trust)</button>
             <span> RAM: <span id="ramCount">1</span></span>
         </div>
 
         <div class="projectsDiv" id="projectsDiv" style="display: none;">
             <h2>Projects</h2>
-            <button id="btnImproveAuto" style="display: none;">
+            <button id="btnImproveAuto" style="display: none;" aria-label="Buy Improved AutoCapsers for 500 Ops">
                 Improved AutoCapsers (500 Ops)
             </button>
-        </div>   
+        </div>
 
     </div>
-    
+
     <script type="module" src="js/main.js"></script>
 
 </body>

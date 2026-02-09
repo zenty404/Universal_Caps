@@ -5,6 +5,7 @@
 
 body {
     margin: 0;
+    padding-top: 60px;
 }
 
 .terminal {
@@ -39,7 +40,25 @@ body {
     transform: translateY(0);
 }
 
-/* --- Nouveaux styles extraits du HTML --- */
+/* --- Boutons --- */
+
+button {
+    cursor: pointer;
+    transition: background-color 150ms ease, transform 100ms ease;
+}
+
+button:hover:not(:disabled) {
+    filter: brightness(1.2);
+}
+
+button:active:not(:disabled) {
+    transform: scale(0.96);
+}
+
+button:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
 
 /* Le bouton Reset en haut à droite */
 #resetBtn {
@@ -62,14 +81,12 @@ body {
 }
 
 /* La section IT Resources (colonne de droite) */
-/* Note : Le JS change souvent ce display en 'block' lors du déblocage, 
-   mais on garde la valeur initiale du HTML ici. */
 .itResourcesDiv {
-	display: flex;          /* Active le mode Flexbox */
-    flex-direction: column; /* CRUCIAL : Force les éléments à s'empiler verticalement */
-    gap: 10px;              /* Espacement entre chaque élément (Trust, Ops, Boutons...) */
-    padding-left: 20px;     /* Espace après la ligne de séparation */
-    min-width: 300px;       /* Largeur minimum pour que ce soit propre */
+	display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding-left: 20px;
+    min-width: 300px;
 }
 
 .btnBuyCPU {
@@ -85,4 +102,21 @@ body {
 .projectsDiv {
     display: flex;
     flex-direction: column;
+}
+
+/* --- Responsive mobile --- */
+@media (max-width: 768px) {
+    .game-container {
+        flex-direction: column;
+    }
+
+    .itResourcesDiv {
+        padding-left: 0;
+        min-width: auto;
+        padding: 10px;
+    }
+
+    .projectsDiv {
+        padding: 10px;
+    }
 }

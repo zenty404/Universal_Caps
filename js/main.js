@@ -8,44 +8,60 @@ import * as Actions from './actions.js';
 import { updateButtons } from './ui.js';
 
 document.addEventListener('DOMContentLoaded', () => {
-    
+
     loadGame();
 
-    // --- 2. ÉVÉNEMENTS (CLICS) ---
-    
+    // --- ÉVÉNEMENTS (CLICS) ---
+
     document.getElementById('resetBtn').addEventListener('click', resetGame);
-    
     document.getElementById('MakeCaps').addEventListener('click', () => Actions.makeCaps(1));
-    
     document.getElementById('btnLowerPrice').addEventListener('click', Actions.lowerPrice);
     document.getElementById('btnRaisePrice').addEventListener('click', Actions.raisePrice);
     document.getElementById('BuyAutoCapser').addEventListener('click', Actions.buyAutoCapser);
     document.getElementById('btnExpandMarketing').addEventListener('click', Actions.buyAds);
-
     document.getElementById('btnBuyCPU').addEventListener('click', Actions.buyCPU);
     document.getElementById('btnBuyRAM').addEventListener('click', Actions.buyRAM);
-    
-    // CORRECTION ICI : Appel de la nouvelle fonction
     document.getElementById('btnImproveAuto').addEventListener('click', Actions.buyImprovedAutoCapsers);
 
+    // --- BOUCLES DE JEU ---
 
-    // --- 3. BOUCLES DE JEU (LOOPS) ---
-    
-    setInterval(() => {
-        Actions.autoGenerateCaps();
-        Actions.autoSell();
-    }, 1000);
+    let mainLoopId, fastLoopId, saveLoopId;
 
-    setInterval(() => {
-        Actions.processOps();     
-        Actions.checkProjects();  
-    }, 1000);
+    function startLoops() {
+        // Boucle principale (1s) : production, vente, ops, projets
+        mainLoopId = setInterval(() => {
+            Actions.autoGenerateCaps();
+            Actions.autoSell();
+            Actions.processOps();
+            Actions.checkProjects();
+        }, 1000);
 
-    setInterval(() => {
-        Actions.calculatePublicDemand();
-        updateButtons();
-    }, 200);
+        // Boucle rapide (200ms) : demande + mise à jour boutons
+        fastLoopId = setInterval(() => {
+            Actions.calculatePublicDemand();
+            updateButtons();
+        }, 200);
 
-    setInterval(saveGame, 5000);
+        // Sauvegarde (5s)
+        saveLoopId = setInterval(saveGame, 5000);
+    }
+
+    function stopLoops() {
+        clearInterval(mainLoopId);
+        clearInterval(fastLoopId);
+        clearInterval(saveLoopId);
+    }
+
+    startLoops();
+
+    // Pause quand l'onglet est caché, reprend quand visible
+    document.addEventListener('visibilitychange', () => {
+        if (document.hidden) {
+            saveGame();
+            stopLoops();
+        } else {
+            startLoops();
+        }
+    });
 
 });

@@ -18,7 +18,7 @@ export function showTerminalMessage(text, duration = 5000) {
 
     el.textContent = text;
     el.classList.add('visible');
-    
+
     clearTimeout(el._hideTimeout);
     el._hideTimeout = setTimeout(() => {
         el.classList.remove('visible');
@@ -48,7 +48,7 @@ export function unlockITResources(loading = false) {
 export function hideITResources() {
     const divIT = document.getElementById('itResourcesDiv');
     const divProjects = document.getElementById('projectsDiv');
-    
+
     if(divIT) divIT.style.display = 'none';
     if(divProjects) divProjects.style.display = 'none';
 }
@@ -57,19 +57,21 @@ export function hideITResources() {
 export function updateAllDisplays() {
     // 1. Économie
     setText('caps', Math.floor(state.caps).toLocaleString());
-    
-    // CORRECTION ICI : unsoldCaps
     setText('unsoldCaps', Math.floor(state.unsold).toLocaleString());
-    
     setText('funds', state.funds.toFixed(2));
     setText('avgRev', state.revenuePerSecond.toFixed(2));
-    
-    // 2. Business & Marketing
+
+    // 2. Prix & Demande (depuis state)
+    setText('margin', state.margin.toFixed(2));
+    setText('demand', state.demand.toFixed(0));
+
+    // 3. Business & Marketing
     setText('priceAutoCapser', state.priceAutoCapser.toFixed(2));
     setText('marketingLvl', state.marketingLvl);
     setText('adCost', state.adCost.toFixed(2));
+    setText('autoCapserCount', state.autoCapsers);
 
-    // 3. IT Resources
+    // 4. IT Resources
     setText('trust', state.trust);
     setText('nextTrust', state.nextTrustAt.toLocaleString());
     setText('ops', state.ops);
@@ -98,9 +100,15 @@ export function updateButtons() {
 }
 
 export function updateDemandDisplay(value) {
+    state.demand = value;
     setText('demand', value.toFixed(0));
 }
 
 export function updateMarginDisplay(value) {
+    state.margin = value;
     setText('margin', value.toFixed(2));
+}
+
+export function updateRevenueDisplay() {
+    setText('avgRev', state.revenuePerSecond.toFixed(2));
 }
