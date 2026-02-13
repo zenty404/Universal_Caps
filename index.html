@@ -11,7 +11,10 @@
     <header class="terminal">
         <div class="terminal-title">Welcome to Universal Caps !</div>
         <div class="terminal-message" id="terminalMessage" aria-live="polite" aria-atomic="true"></div>
-        <button id="resetBtn" aria-label="Reset game">Reset Game</button>
+        <div class="terminal-buttons">
+            <button id="btnStats" aria-label="Toggle statistics">Stats</button>
+            <button id="resetBtn" aria-label="Reset game">Reset Game</button>
+        </div>
     </header>
 
     <div>
@@ -26,6 +29,9 @@
 
             Available Funds: $ <span id="funds">0.00</span><br>
             Avg. Rev. / sec: $ <span id="avgRev">0.00</span><br>
+            <span id="revenueTrackerSpan" style="display: none;">
+                Revenue / min: $ <span id="revenuePerMinute">0.00</span><br>
+            </span>
             Unsold Inventory: <span id="unsoldCaps">0</span><br>
 
             <button id="btnLowerPrice" aria-label="Lower price">lower</button>
@@ -47,7 +53,28 @@
                 <button id="BuyAutoCapser" disabled aria-label="Buy AutoCapser">Buy AutoCapser</button>
                 Price : $ <span id="priceAutoCapser">15</span><br>
                 AutoCapsers: <span id="autoCapserCount">0</span>
+
+                <div id="megaCapserDiv" style="display: none;">
+                    <hr>
+                    <button id="btnBuyMegaCapser" disabled>Buy MegaCapser ($<span id="priceMegaCapser">5000</span>)</button>
+                    MegaCapsers: <span id="megaCapserCount">0</span>
+                </div>
             </div>
+        </div>
+
+        <div id="fabricDiv" style="display: none;">
+            <h3>Fabric Supply</h3>
+            <div>Fabric: <span id="fabric">0</span> units</div>
+            <button id="btnBuyFabric">Buy Fabric Roll ($<span id="fabricPrice">5.00</span>)</button>
+        </div>
+
+        <div id="investmentDiv" style="display: none;">
+            <h3>Investment Fund</h3>
+            <div>Invested: $ <span id="investedFunds">0.00</span></div>
+            <div>Return: <span id="investmentReturn">0.00</span></div>
+            <button id="btnInvest100">Invest $100</button>
+            <button id="btnInvest1000">Invest $1000</button>
+            <button id="btnWithdraw">Withdraw All</button>
         </div>
 
         <div class="itResourcesDiv" id="itResourcesDiv" style="display: none;">
@@ -57,6 +84,7 @@
             <div><b>Next Trust at:</b> <span id="nextTrust">1 000</span> caps</div>
             <br>
             <div><b>Ops:</b> <span id="ops">0</span> / <span id="opsMax">1000</span></div>
+            <div><b>Creativity:</b> <span id="creativity">0</span> / <span id="creativityMax">500</span></div>
             <br>
 
             <button class="btnBuyCPU" id="btnBuyCPU" disabled aria-label="Buy CPU for 1 Trust">Buy CPU (1 Trust)</button>
@@ -69,11 +97,245 @@
 
         <div class="projectsDiv" id="projectsDiv" style="display: none;">
             <h2>Projects</h2>
-            <button id="btnImproveAuto" style="display: none;" aria-label="Buy Improved AutoCapsers for 500 Ops">
-                Improved AutoCapsers (500 Ops)
-            </button>
         </div>
 
+        <div id="strategyDiv" style="display: none;">
+            <h3>Strategy Game</h3>
+            <div class="strat-stats">
+                <span class="strat-yomi">Yomi: <b id="yomi">0</b></span>
+                <span class="strat-record" id="strategyRecord">0W-0L-0D</span>
+            </div>
+
+            <div class="strat-arena">
+                <div class="strat-side">
+                    <div class="strat-label">YOU</div>
+                    <div class="strat-icon" id="stratPlayerIcon">?</div>
+                </div>
+                <div class="strat-vs">VS</div>
+                <div class="strat-side">
+                    <div class="strat-label">AI</div>
+                    <div class="strat-icon" id="stratAIIcon">?</div>
+                </div>
+            </div>
+
+            <div id="strategyResult" class="strat-result"></div>
+
+            <div class="strat-buttons">
+                <button id="btnStratAggressive" class="strat-btn strat-aggressive" title="Beats Defensive, loses to Balanced">Aggressive</button>
+                <button id="btnStratBalanced" class="strat-btn strat-balanced" title="Beats Aggressive, loses to Defensive">Balanced</button>
+                <button id="btnStratDefensive" class="strat-btn strat-defensive" title="Beats Balanced, loses to Aggressive">Defensive</button>
+            </div>
+            <div class="strat-hint">Aggressive &gt; Defensive &gt; Balanced &gt; Aggressive</div>
+        </div>
+
+        <div id="energyDiv" style="display: none;">
+            <h3>Energy</h3>
+            <div class="energy-bar-container">
+                <div class="energy-bar" id="energyBar"></div>
+                <span class="energy-bar-text">
+                    <span id="energy">0</span> / <span id="energyMax">100</span>
+                </span>
+            </div>
+            <div class="energy-stats">
+                <div>Solar Panels: <span id="solarPanelCount">0</span></div>
+                <div>Generation: <span id="energyPerSec">0</span>/s</div>
+                <div id="batteryLine" style="display: none;">Batteries: <span id="batteryCount">0</span></div>
+            </div>
+            <button id="btnBuySolarPanel">Buy Solar Panel ($<span id="priceSolarPanel">500</span>)</button>
+            <button id="btnBuyBattery" style="display: none;">Buy Battery ($<span id="priceBattery">1000</span>)</button>
+        </div>
+
+        <div id="factoriesDiv" style="display: none;">
+            <h3>Factories</h3>
+            <div>Factories: <span id="factoryCount">0</span></div>
+            <div>Efficiency: x<span id="factoryEfficiency">1.0</span></div>
+            <div>Production: <span id="factoryProduction">0</span> caps/s</div>
+            <button id="btnBuyFactory">Buy Factory ($<span id="priceFactory">10000</span>)</button>
+        </div>
+
+        <div id="dronesDiv" style="display: none;">
+            <h3>Drones</h3>
+            <div>Drones: <span id="droneCount">0</span></div>
+            <div>Efficiency: x<span id="droneEfficiency">1.0</span></div>
+            <div class="drone-harvest-indicator">Auto-Harvest: <span id="droneHarvest">0</span> fabric/s</div>
+            <button id="btnBuyDrone">Buy Drone ($<span id="priceDrone">2000</span>)</button>
+        </div>
+
+        <div id="influenceDiv" style="display: none;">
+            <h3>Influence</h3>
+            <div class="influence-total">Influence: <span id="influence">0</span></div>
+            <ul class="influence-milestones" id="influenceMilestoneList">
+                <li data-threshold="10000000"><span class="milestone-check" id="infCheck10m"></span> 10M caps — +10 influence</li>
+                <li data-threshold="50000000"><span class="milestone-check" id="infCheck50m"></span> 50M caps — +50 influence</li>
+                <li data-threshold="100000000"><span class="milestone-check" id="infCheck100m"></span> 100M caps — +100 influence</li>
+                <li data-threshold="500000000"><span class="milestone-check" id="infCheck500m"></span> 500M caps — +500 influence</li>
+                <li data-threshold="1000000000"><span class="milestone-check" id="infCheck1b"></span> 1B caps — +1000 influence</li>
+            </ul>
+        </div>
+
+        <div id="probesDiv" style="display: none;">
+            <h3>Probes</h3>
+            <div class="probe-count">Probes: <span id="probeCount">0</span></div>
+            <div id="probeReplicationLine" style="display: none;">Replication: +<span id="probeReplicationRate">0</span>/s</div>
+
+            <div class="probe-trust-header">
+                Probe Trust: <span id="probeTrustAvailable">0</span> / <span id="probeTrustTotal">0</span>
+                <span class="probe-trust-hint">(Shift +5, Ctrl +10)</span>
+            </div>
+            <div class="probe-trust-grid">
+                <div class="probe-stat">
+                    <span class="probe-stat-label">Speed</span>
+                    <button class="probe-minus" id="probeSpeedMinus">-</button>
+                    <span class="probe-stat-value" id="probeSpeedVal">0</span>
+                    <button class="probe-plus" id="probeSpeedPlus">+</button>
+                </div>
+                <div class="probe-stat">
+                    <span class="probe-stat-label">Replication</span>
+                    <button class="probe-minus" id="probeReplicationMinus">-</button>
+                    <span class="probe-stat-value" id="probeReplicationVal">0</span>
+                    <button class="probe-plus" id="probeReplicationPlus">+</button>
+                </div>
+                <div class="probe-stat">
+                    <span class="probe-stat-label">Harvesting</span>
+                    <button class="probe-minus" id="probeHarvestingMinus">-</button>
+                    <span class="probe-stat-value" id="probeHarvestingVal">0</span>
+                    <button class="probe-plus" id="probeHarvestingPlus">+</button>
+                </div>
+                <div class="probe-stat">
+                    <span class="probe-stat-label">Combat</span>
+                    <button class="probe-minus" id="probeCombatMinus">-</button>
+                    <span class="probe-stat-value" id="probeCombatVal">0</span>
+                    <button class="probe-plus" id="probeCombatPlus">+</button>
+                </div>
+                <div class="probe-stat">
+                    <span class="probe-stat-label">Exploration</span>
+                    <button class="probe-minus" id="probeExplorationMinus">-</button>
+                    <span class="probe-stat-value" id="probeExplorationVal">0</span>
+                    <button class="probe-plus" id="probeExplorationPlus">+</button>
+                </div>
+            </div>
+
+            <div id="combatLogDiv" class="combat-section" style="display: none;">
+                <div class="combat-header">Combat Log</div>
+                <div>Victories: <span id="combatVictories">0</span> | Defeats: <span id="combatDefeats">0</span></div>
+                <div>Total Probes Lost: <span id="combatProbesLostTotal">0</span></div>
+                <div class="combat-last" id="combatLast"></div>
+            </div>
+        </div>
+
+        <div id="cosmicDiv" style="display: none;">
+            <h3>Cosmic</h3>
+            <div>Cosmic Fabric: <span id="cosmicFabric">0</span></div>
+            <div>Production Multiplier: x<span id="cosmicProductionMultiplier">1</span></div>
+            <div class="exploration-section">
+                <div>Universe Explored: <span id="universeExplored">0.0</span>%</div>
+                <div class="exploration-bar-container">
+                    <div class="exploration-bar" id="explorationBar"></div>
+                </div>
+                <div>Exploration Speed: x<span id="explorationSpeed">1</span></div>
+            </div>
+            <div id="discoveryLog" class="discovery-section" style="display: none;">
+                <div class="discovery-header">Discoveries: <span id="discoveryCount">0</span> / 7</div>
+            </div>
+        </div>
+
+        <div id="endGameDiv" style="display: none;">
+            <h3>The Final Stitch</h3>
+            <div class="endgame-text" id="endGameText">
+                The universe is fully explored. Every thread of cosmic fabric has been woven into caps.
+                You stand at the edge of existence with a choice:
+            </div>
+            <div class="endgame-choices" id="endGameChoices">
+                <button class="endgame-btn endgame-unravel" id="btnUnravel">
+                    <span class="endgame-btn-title">Unravel</span>
+                    <span class="endgame-btn-desc">Release all caps back into the cosmos. The universe resets, but you retain a fragment of knowledge.</span>
+                </button>
+                <button class="endgame-btn endgame-weave" id="btnWeave">
+                    <span class="endgame-btn-title">Weave</span>
+                    <span class="endgame-btn-desc">Weave every cap into the fabric of reality itself. The universe becomes caps. There is nothing else.</span>
+                </button>
+            </div>
+            <div class="endgame-result" id="endGameResult" style="display: none;"></div>
+        </div>
+
+    </div>
+
+    <!-- Phase Transition Overlay -->
+    <div id="phaseOverlay" class="phase-overlay" style="display: none;">
+        <div class="phase-overlay-content">
+            <div class="phase-overlay-phase" id="phaseOverlayPhase"></div>
+            <div class="phase-overlay-title" id="phaseOverlayTitle"></div>
+            <div class="phase-overlay-desc" id="phaseOverlayDesc"></div>
+        </div>
+    </div>
+
+    <!-- Statistics Panel -->
+    <div id="statsPanel" style="display: none;">
+        <div class="stats-header">
+            <span>Statistics</span>
+            <button id="statsClose">X</button>
+        </div>
+        <div class="stats-content">
+            <div class="stats-row"><span>Phase</span><span id="statPhase">1</span></div>
+            <div class="stats-row"><span>Time Played</span><span id="statTimePlayed">0:00:00</span></div>
+            <div class="stats-row"><span>Total Caps Produced</span><span id="statTotalCaps">0</span></div>
+            <div class="stats-row"><span>Total Caps Sold</span><span id="statTotalSold">0</span></div>
+            <div class="stats-row"><span>Lifetime Revenue</span><span id="statTotalRevenue">$0</span></div>
+            <div class="stats-row"><span>Projects Completed</span><span id="statProjects">0</span></div>
+            <div class="stats-row"><span>Current Caps</span><span id="statCurrentCaps">0</span></div>
+            <div class="stats-row"><span>Current Funds</span><span id="statCurrentFunds">$0</span></div>
+            <div class="stats-row" id="statCombatRow" style="display:none;"><span>Combat Record</span><span id="statCombatRecord">0V / 0D</span></div>
+            <div class="stats-row" id="statExploreRow" style="display:none;"><span>Universe Explored</span><span id="statExplored">0%</span></div>
+            <div class="stats-row" id="statDiscoveryRow" style="display:none;"><span>Discoveries</span><span id="statDiscoveries">0/7</span></div>
+        </div>
+    </div>
+
+    <!-- Cheat Menu (Ctrl+Shift+C) -->
+    <div id="cheatMenu" style="display: none;">
+        <div class="cheat-header">
+            <span>CHEAT MENU</span>
+            <button id="cheatClose">X</button>
+        </div>
+        <div class="cheat-section">
+            <b>Resources</b>
+            <button id="cheatCaps1k">+1K Caps</button>
+            <button id="cheatCaps100k">+100K Caps</button>
+            <button id="cheatCaps10m">+10M Caps</button>
+            <button id="cheatFunds1k">+$1K Funds</button>
+            <button id="cheatFunds100k">+$100K Funds</button>
+            <button id="cheatFabric5k">+5K Fabric</button>
+        </div>
+        <div class="cheat-section">
+            <b>IT</b>
+            <button id="cheatOpsMax">Max Ops</button>
+            <button id="cheatCreativityMax">Max Creativity</button>
+            <button id="cheatTrust10">+10 Trust</button>
+            <button id="cheatYomi100">+100 Yomi</button>
+        </div>
+        <div class="cheat-section">
+            <b>Units</b>
+            <button id="cheatAuto10">+10 AutoCapsers</button>
+            <button id="cheatMega5">+5 MegaCapsers</button>
+        </div>
+        <div class="cheat-section">
+            <b>Unlock All</b>
+            <button id="cheatUnlockAll">Unlock All Phase 1</button>
+            <button id="cheatUnlockAllP2">Unlock All Phase 2</button>
+        </div>
+        <div class="cheat-section">
+            <b>Phase 2</b>
+            <button id="cheatCaps1b">+1B Caps</button>
+            <button id="cheatEnergy1k">+1K Energy</button>
+            <button id="cheatInfluence100">+100 Influence</button>
+        </div>
+        <div class="cheat-section">
+            <b>Phase 3</b>
+            <button id="cheatUnlockAllP3">Unlock All Phase 3</button>
+            <button id="cheatProbes1k">+1K Probes</button>
+            <button id="cheatProbeTrust10">+10 Probe Trust</button>
+            <button id="cheatExplore25">+25% Explored</button>
+            <button id="cheatCosmicFabric1k">+1K cFabric</button>
+        </div>
     </div>
 
     <script type="module" src="js/main.js"></script>

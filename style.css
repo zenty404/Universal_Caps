@@ -1,4 +1,4 @@
-/* Terminal-like header */
+/* --- Reset & Base --- */
 * {
     box-sizing: border-box;
 }
@@ -6,8 +6,13 @@
 body {
     margin: 0;
     padding-top: 60px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-size: 14px;
+    color: #eee;
+    background: #0d0d0d;
 }
 
+/* --- Terminal Header --- */
 .terminal {
     background: #000;
     color: #fff;
@@ -40,8 +45,12 @@ body {
     transform: translateY(0);
 }
 
-/* --- Boutons --- */
+/* --- Caps Header --- */
+body > div:nth-child(2) {
+    padding: 10px 16px;
+}
 
+/* --- Boutons --- */
 button {
     cursor: pointer;
     transition: background-color 150ms ease, transform 100ms ease;
@@ -60,63 +69,790 @@ button:disabled {
     opacity: 0.5;
 }
 
-/* Le bouton Reset en haut à droite */
 #resetBtn {
     position: absolute;
     top: 10px;
     right: 10px;
 }
 
-/* Le conteneur principal qui met les colonnes côte à côte */
+/* --- Game Container : Grille de panneaux --- */
 .game-container {
     display: flex;
-    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding: 12px 16px;
+    align-items: flex-start;
 }
 
-/* L'en-tête de la section automatisation (titre + ligne) */
+/* --- Panneau générique (card) --- */
+.game-container > div {
+    background: #151515;
+    border: 1px solid #2a2a2a;
+    border-radius: 6px;
+    padding: 12px;
+    flex: 1 1 280px;
+    max-width: 400px;
+    min-width: 260px;
+}
+
+/* --- Business (un peu plus large) --- */
+#businessDiv {
+    flex: 1 1 300px;
+    max-width: 420px;
+}
+
+/* --- Automatisation --- */
 .auto-header {
     display: flex;
     align-items: center;
     gap: 10px;
 }
 
-/* La section IT Resources (colonne de droite) */
+/* --- IT Resources --- */
 .itResourcesDiv {
-	display: flex;
+    display: flex;
     flex-direction: column;
-    gap: 10px;
-    padding-left: 20px;
-    min-width: 300px;
+    gap: 8px;
 }
 
-.btnBuyCPU {
+.btnBuyCPU, .btnBuyRAM {
     width: 150px;
-    height: 50px;
+    height: 40px;
 }
 
-.btnBuyRAM {
-    width: 150px;
-    height: 50px;
-}
-
+/* --- Projects --- */
 .projectsDiv {
     display: flex;
     flex-direction: column;
+    gap: 6px;
+    flex: 1 1 320px;
+    max-width: 450px;
+}
+
+.project-btn {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    padding: 8px 12px;
+    margin: 3px 0;
+    text-align: left;
+    border: 1px solid #666;
+    background: #222;
+    color: #eee;
+    border-radius: 4px;
+}
+
+.project-btn:hover:not(:disabled) {
+    background: #333;
+    border-color: #9cff9c;
+}
+
+.project-btn:disabled {
+    background: #1a1a1a;
+    color: #666;
+    border-color: #444;
+}
+
+.proj-name {
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.proj-desc {
+    font-size: 11px;
+    opacity: 0.6;
+    margin-top: 2px;
+    font-weight: 400;
+}
+
+/* --- Investment --- */
+#investmentDiv button {
+    margin: 3px 2px;
+}
+
+.positive-return {
+    color: #4caf50;
+}
+
+.negative-return {
+    color: #f44336;
+}
+
+/* --- Strategy Section --- */
+.strat-stats {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.strat-yomi {
+    font-size: 15px;
+}
+
+.strat-yomi b {
+    color: #ffcc00;
+}
+
+.strat-record {
+    font-size: 12px;
+    opacity: 0.7;
+}
+
+.strat-arena {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    margin: 12px 0;
+    padding: 10px;
+    background: #111;
+    border-radius: 8px;
+    border: 1px solid #333;
+}
+
+.strat-side {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 70px;
+}
+
+.strat-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    opacity: 0.5;
+    margin-bottom: 4px;
+}
+
+.strat-icon {
+    font-size: 32px;
+    width: 56px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #1a1a1a;
+    border-radius: 50%;
+    border: 2px solid #444;
+    transition: border-color 300ms ease, transform 200ms ease;
+}
+
+.strat-pick-aggressive { border-color: #e94560; }
+.strat-pick-balanced { border-color: #4ecdc4; }
+.strat-pick-defensive { border-color: #45b7d1; }
+
+.strat-vs {
+    font-size: 18px;
+    font-weight: 800;
+    opacity: 0.3;
+}
+
+.strat-result {
+    text-align: center;
+    padding: 6px;
+    margin: 8px 0;
+    border-radius: 4px;
+    font-size: 13px;
+    font-weight: 600;
+    min-height: 1.6em;
+    animation: strat-flash 400ms ease;
+}
+
+.strat-win { color: #4caf50; background: rgba(76, 175, 80, 0.1); }
+.strat-loss { color: #f44336; background: rgba(244, 67, 54, 0.1); }
+.strat-draw { color: #ffcc00; background: rgba(255, 204, 0, 0.08); }
+
+@keyframes strat-flash {
+    0% { opacity: 0; transform: scale(0.95); }
+    100% { opacity: 1; transform: scale(1); }
+}
+
+.strat-buttons {
+    display: flex;
+    gap: 6px;
+}
+
+.strat-btn {
+    flex: 1;
+    padding: 8px 4px;
+    font-size: 12px;
+    font-weight: 600;
+    border: 2px solid #444;
+    border-radius: 6px;
+    background: #1a1a1a;
+    color: #eee;
+    text-align: center;
+}
+
+.strat-aggressive { border-color: #e94560; }
+.strat-aggressive:hover:not(:disabled) { background: #e94560; color: #fff; }
+.strat-balanced { border-color: #4ecdc4; }
+.strat-balanced:hover:not(:disabled) { background: #4ecdc4; color: #111; }
+.strat-defensive { border-color: #45b7d1; }
+.strat-defensive:hover:not(:disabled) { background: #45b7d1; color: #111; }
+
+.strat-hint {
+    text-align: center;
+    font-size: 10px;
+    opacity: 0.4;
+    margin-top: 6px;
+}
+
+/* --- Phase 2 : Energy --- */
+.energy-bar-container {
+    position: relative;
+    width: 100%;
+    height: 24px;
+    background: #1a1a1a;
+    border: 1px solid #444;
+    border-radius: 4px;
+    overflow: hidden;
+    margin: 8px 0;
+}
+
+.energy-bar {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #2ecc40, #4caf50);
+    border-radius: 3px;
+    transition: width 400ms ease;
+    box-shadow: 0 0 8px rgba(46, 204, 64, 0.3);
+}
+
+.energy-bar-text {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 600;
+    color: #eee;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
+    pointer-events: none;
+}
+
+.energy-stats {
+    display: flex;
+    gap: 16px;
+    font-size: 13px;
+    margin-bottom: 8px;
+    flex-wrap: wrap;
+}
+
+#energyDiv button {
+    margin: 3px 2px;
+}
+
+/* --- Phase 2 : Factories & Drones --- */
+#factoriesDiv div,
+#dronesDiv div {
+    margin-bottom: 4px;
+}
+
+.drone-harvest-indicator {
+    color: #4caf50;
+    font-weight: 600;
+}
+
+/* --- Phase 2 : Influence --- */
+.influence-total {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.influence-milestones {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.influence-milestones li {
+    padding: 4px 0;
+    font-size: 13px;
+    border-bottom: 1px solid #222;
+}
+
+.influence-milestones li:last-child {
+    border-bottom: none;
+}
+
+.milestone-check {
+    display: inline-block;
+    width: 18px;
+    text-align: center;
+    font-size: 14px;
+    margin-right: 4px;
+}
+
+/* --- Phase 3 : Probes --- */
+.probe-count {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 6px;
+}
+
+#probeReplicationLine {
+    font-size: 13px;
+    color: #9cff9c;
+    margin-bottom: 6px;
+}
+
+.probe-trust-header {
+    font-size: 13px;
+    font-weight: 600;
+    margin: 8px 0 6px;
+    padding-bottom: 4px;
+    border-bottom: 1px solid #333;
+}
+
+.probe-trust-hint {
+    font-size: 10px;
+    font-weight: 400;
+    opacity: 0.4;
+    margin-left: 6px;
+}
+
+.probe-trust-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.probe-stat {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 3px 0;
+}
+
+.probe-stat-label {
+    width: 90px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.probe-stat-value {
+    width: 28px;
+    text-align: center;
+    font-size: 14px;
+    font-weight: 700;
+    color: #ffcc00;
+}
+
+.probe-minus,
+.probe-plus {
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    font-size: 16px;
+    font-weight: 700;
+    border: 1px solid #555;
+    border-radius: 4px;
+    background: #1a1a2e;
+    color: #eee;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.probe-minus:hover:not(:disabled) { background: #e94560; border-color: #e94560; }
+.probe-plus:hover:not(:disabled) { background: #4caf50; border-color: #4caf50; }
+
+/* --- Phase 3 : Cosmic --- */
+#cosmicDiv div {
+    margin-bottom: 4px;
+}
+
+.exploration-section {
+    margin-top: 10px;
+}
+
+.exploration-bar-container {
+    position: relative;
+    width: 100%;
+    height: 20px;
+    background: #1a1a1a;
+    border: 1px solid #444;
+    border-radius: 4px;
+    overflow: hidden;
+    margin: 6px 0;
+}
+
+.exploration-bar {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #1a237e, #7c4dff, #e040fb);
+    border-radius: 3px;
+    transition: width 800ms ease;
+    box-shadow: 0 0 10px rgba(124, 77, 255, 0.4);
+}
+
+/* --- Phase 3 : Combat Log --- */
+.combat-section {
+    margin-top: 10px;
+    padding-top: 8px;
+    border-top: 1px solid #333;
+}
+
+.combat-header {
+    font-size: 13px;
+    font-weight: 700;
+    color: #e94560;
+    margin-bottom: 4px;
+}
+
+.combat-last {
+    font-size: 12px;
+    color: #ff8a80;
+    margin-top: 4px;
+    font-style: italic;
+}
+
+/* --- Phase 3 : Discoveries --- */
+.discovery-section {
+    margin-top: 10px;
+    padding-top: 8px;
+    border-top: 1px solid #333;
+}
+
+.discovery-header {
+    font-size: 13px;
+    font-weight: 700;
+    color: #e040fb;
+}
+
+/* --- Phase 3 : End Game --- */
+#endGameDiv {
+    border-color: #7c4dff;
+    background: rgba(26, 35, 126, 0.15);
+    flex: 1 1 400px;
+    max-width: 520px;
+}
+
+.endgame-text {
+    font-size: 14px;
+    line-height: 1.5;
+    margin-bottom: 16px;
+    opacity: 0.9;
+}
+
+.endgame-choices {
+    display: flex;
+    gap: 12px;
+}
+
+.endgame-btn {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 12px;
+    border-radius: 8px;
+    border: 2px solid #555;
+    background: #111;
+    color: #eee;
+    text-align: left;
+}
+
+.endgame-btn:hover:not(:disabled) {
+    transform: scale(1.02);
+}
+
+.endgame-btn-title {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 6px;
+}
+
+.endgame-btn-desc {
+    font-size: 11px;
+    opacity: 0.7;
+    line-height: 1.4;
+}
+
+.endgame-unravel { border-color: #e94560; }
+.endgame-unravel:hover:not(:disabled) { background: rgba(233, 69, 96, 0.15); }
+.endgame-weave { border-color: #7c4dff; }
+.endgame-weave:hover:not(:disabled) { background: rgba(124, 77, 255, 0.15); }
+
+.endgame-result {
+    margin-top: 16px;
+    padding: 16px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.05);
+    line-height: 1.6;
+    font-size: 14px;
+    animation: endgame-fade 1.5s ease;
+}
+
+.endgame-result h4 {
+    font-size: 18px;
+    margin: 0 0 8px;
+    color: #e040fb;
+}
+
+.endgame-final {
+    margin-top: 12px;
+    font-weight: 700;
+    font-size: 16px;
+    text-align: center;
+    color: #ffcc00;
+}
+
+@keyframes endgame-fade {
+    0% { opacity: 0; transform: translateY(10px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
+/* --- Phase Transition Overlay --- */
+.phase-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.92);
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: phase-overlay-in 600ms ease;
+}
+
+.phase-overlay-content {
+    text-align: center;
+    max-width: 500px;
+    padding: 40px;
+}
+
+.phase-overlay-phase {
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    opacity: 0.5;
+    margin-bottom: 12px;
+    animation: phase-text-in 800ms ease both 200ms;
+}
+
+.phase-overlay-title {
+    font-size: 32px;
+    font-weight: 800;
+    margin-bottom: 16px;
+    background: linear-gradient(90deg, #7c4dff, #e040fb, #ffcc00);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: phase-text-in 800ms ease both 400ms;
+}
+
+.phase-overlay-desc {
+    font-size: 15px;
+    line-height: 1.6;
+    opacity: 0.8;
+    animation: phase-text-in 800ms ease both 600ms;
+}
+
+@keyframes phase-overlay-in {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+}
+
+@keyframes phase-text-in {
+    0% { opacity: 0; transform: translateY(20px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
+/* --- Statistics Panel --- */
+#statsPanel {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #1a1a2e;
+    border: 2px solid #7c4dff;
+    border-radius: 8px;
+    padding: 0;
+    z-index: 9998;
+    width: 320px;
+    max-height: 80vh;
+    overflow-y: auto;
+    font-size: 13px;
+    color: #eee;
+    box-shadow: 0 4px 30px rgba(124, 77, 255, 0.3);
+}
+
+.stats-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #7c4dff;
+    color: #fff;
+    padding: 8px 12px;
+    font-weight: 700;
+    font-size: 14px;
+    border-radius: 6px 6px 0 0;
+}
+
+.stats-header button {
+    background: none;
+    border: none;
+    color: #fff;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    padding: 0 4px;
+}
+
+.stats-content {
+    padding: 12px;
+}
+
+.stats-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 6px 0;
+    border-bottom: 1px solid #2a2a3e;
+}
+
+.stats-row:last-child {
+    border-bottom: none;
+}
+
+.stats-row span:first-child {
+    opacity: 0.7;
+}
+
+.stats-row span:last-child {
+    font-weight: 600;
+    color: #ffcc00;
+}
+
+/* --- Terminal buttons --- */
+.terminal-buttons {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    display: flex;
+    gap: 6px;
+}
+
+#resetBtn {
+    position: static;
+}
+
+/* --- Cheat Menu --- */
+#cheatMenu {
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    background: #1a1a2e;
+    border: 2px solid #e94560;
+    border-radius: 8px;
+    padding: 0;
+    z-index: 9999;
+    width: 280px;
+    max-height: calc(100vh - 80px);
+    overflow-y: auto;
+    font-family: Menlo, Monaco, "Courier New", monospace;
+    font-size: 12px;
+    color: #eee;
+    box-shadow: 0 4px 20px rgba(233, 69, 96, 0.3);
+}
+
+.cheat-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #e94560;
+    color: #fff;
+    padding: 6px 10px;
+    font-weight: 700;
+    font-size: 13px;
+    border-radius: 6px 6px 0 0;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+.cheat-header button {
+    background: none;
+    border: none;
+    color: #fff;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    padding: 0 4px;
+}
+
+.cheat-section {
+    padding: 8px 10px;
+    border-bottom: 1px solid #333;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    align-items: center;
+}
+
+.cheat-section:last-child {
+    border-bottom: none;
+}
+
+.cheat-section b {
+    width: 100%;
+    margin-bottom: 2px;
+    color: #e94560;
+    font-size: 11px;
+    text-transform: uppercase;
+}
+
+.cheat-section button {
+    background: #16213e;
+    color: #eee;
+    border: 1px solid #555;
+    border-radius: 3px;
+    padding: 4px 8px;
+    font-size: 11px;
+    font-family: inherit;
+}
+
+.cheat-section button:hover {
+    background: #e94560;
+    border-color: #e94560;
 }
 
 /* --- Responsive mobile --- */
 @media (max-width: 768px) {
     .game-container {
         flex-direction: column;
+        padding: 8px;
+    }
+
+    .game-container > div {
+        flex: 1 1 auto;
+        max-width: none;
+        min-width: auto;
+        width: 100%;
     }
 
     .itResourcesDiv {
         padding-left: 0;
-        min-width: auto;
-        padding: 10px;
     }
 
     .projectsDiv {
-        padding: 10px;
+        max-width: none;
+    }
+
+    .endgame-choices {
+        flex-direction: column;
+    }
+
+    #cheatMenu {
+        width: calc(100vw - 20px);
+        bottom: 5px;
+        right: 5px;
+        max-height: 60vh;
     }
 }
