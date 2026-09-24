@@ -292,6 +292,30 @@ export function showEndGameResult(choice) {
     }
 }
 
+// --- Overlay de transition de phase ---
+export function showPhaseOverlay(phase, title, desc) {
+    const overlay = document.getElementById('phaseOverlay');
+    if (!overlay) return;
+
+    setText('phaseOverlayPhase', `Phase ${phase}`);
+    setText('phaseOverlayTitle', title);
+    setText('phaseOverlayDesc', desc);
+    overlay.style.display = 'flex';
+
+    const hide = () => {
+        overlay.style.display = 'none';
+        overlay.removeEventListener('click', hide);
+    };
+    clearTimeout(overlay._hideTimeout);
+    overlay._hideTimeout = setTimeout(hide, 6000);
+    overlay.addEventListener('click', hide);
+}
+
+// --- Combat Log ---
+export function updateCombatLast(text) {
+    setText('combatLast', text);
+}
+
 // --- Mise à jour de l'Interface ---
 export function updateAllDisplays() {
     // 1. Économie

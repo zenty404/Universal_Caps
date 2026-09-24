@@ -12,14 +12,15 @@ import {
     unlockFabric, unlockMegaCapsers, unlockRevenueTracker,
     unlockInvestment, unlockStrategy,
     unlockEnergy, unlockBatteries, unlockFactories, unlockDrones, unlockInfluence,
-    unlockProbes, unlockCosmic, unlockEndGame, showEndGameResult
+    unlockProbes, unlockCosmic, unlockEndGame, showEndGameResult,
+    showPhaseOverlay, updateCombatLast
 } from './ui.js';
 
 // ==========================================
 // 1. FONCTIONS PRIVÉES
 // ==========================================
 
-function checkMilestones() {
+export function checkMilestones() {
     for (const m of state.milestones) {
         if (state.caps >= m && !state.reached.has(m)) {
             state.reached.add(m);
@@ -28,11 +29,17 @@ function checkMilestones() {
     }
 }
 
-function checkTrustGain() {
-    if (state.caps >= state.nextTrustAt) {
+// Boucle (pas simple if) car une grosse production en une seule frame
+// (factories, cosmic production, cheats) peut franchir plusieurs paliers d'un coup.
+export function checkTrustGain() {
+    let gained = false;
+    while (state.caps >= state.nextTrustAt) {
         state.trust++;
-        showTerminalMessage(`Trust Increased! Current Trust: ${state.trust}`);
+        gained = true;
         state.nextTrustAt = Math.floor(state.nextTrustAt * 1.8);
+    }
+    if (gained) {
+        showTerminalMessage(`Trust Increased! Current Trust: ${state.trust}`);
         updateAllDisplays();
     }
 }
@@ -166,9 +173,13 @@ export function buyProject(id) {
     // Transitions de phase
     if (state.phase === 2 && id === 'fullAutomation') {
         showTerminalMessage("PHASE 2: The Industrial Era begins!");
+        showPhaseOverlay(2, "The Industrial Era Begins",
+            "Factories, drones and solar power unlock a new age of mass production.");
     }
     if (state.phase === 3 && id === 'launchProtocol') {
         showTerminalMessage("PHASE 3: The Cosmic Era begins!");
+        showPhaseOverlay(3, "The Cosmic Era Begins",
+            "Probes launch into the void to explore, harvest and expand across the universe.");
     }
 
     showTerminalMessage(`Project completed: ${project.name}`);
@@ -199,6 +210,7 @@ export function checkProjects() {
 // --- Fabric ---
 
 export function buyFabric() {
+    if (!state.fabricUnlocked) return;
     const cost = state.fabricPrice * state.fabricCostMultiplier;
     if (state.funds >= cost) {
         state.funds -= cost;
@@ -223,6 +235,7 @@ export function autoSupply() {
 // --- MegaCapsers ---
 
 export function buyMegaCapser() {
+    if (!state.megaCapsersUnlocked) return;
     if (state.funds >= state.priceMegaCapser) {
         state.funds -= state.priceMegaCapser;
         state.megaCapsers++;
@@ -634,6 +647,7 @@ export function processCombatEncounters() {
         state.cosmicFabric += reward;
         state.combatProbesLost = 0;
         showTerminalMessage(`Drift Encounter: Victory! +${reward} cosmic fabric`);
+        updateCombatLast(`Victory! +${reward} cosmic fabric`);
     } else {
         // Défaite — perte de 5-20% des probes
         state.combatDefeats++;
@@ -644,6 +658,7 @@ export function processCombatEncounters() {
         state.combatProbesLost = lost;
         state.combatProbesLostTotal += lost;
         showTerminalMessage(`Drift Encounter: Defeat! Lost ${lost} probes`);
+        updateCombatLast(`Defeat! Lost ${lost} probes`);
     }
 
     updateAllDisplays();

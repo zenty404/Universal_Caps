@@ -160,7 +160,10 @@ document.addEventListener('DOMContentLoaded', () => {
     function cheatAddCaps(amount) {
         state.caps += amount;
         state.unsold += amount;
+        state.totalCapsProduced += amount;
         if (state.caps >= 100) unlockITResources();
+        Actions.checkMilestones();
+        Actions.checkTrustGain();
         updateAllDisplays();
         showTerminalMessage(`CHEAT: +${amount.toLocaleString()} caps`);
     }
